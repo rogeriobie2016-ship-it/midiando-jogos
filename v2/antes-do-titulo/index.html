@@ -12,7 +12,7 @@
 <meta name="claude:viewport-fit-sides" content="cover">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700;800&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700;800&family=Press+Start+2P&family=Pixelify+Sans:wght@400;600;700&display=swap">
 <style>
 /* Layout: mundo 3D em tela cheia; HUD discreto no topo, diálogo em cartão branco embaixo, telas de capítulo em azul Midiando. */
 :root{
@@ -153,6 +153,8 @@ p{margin:0}
 .side{position:fixed;z-index:5;right:max(14px,env(safe-area-inset-right,0px));bottom:calc(28px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:10px}
 .side .icon{width:50px;height:50px}
 .side .icon svg{width:22px;height:22px}
+.camrow{display:flex;gap:8px;justify-content:flex-end}
+.camrow .icon{width:44px;height:44px}
 .hint{right:auto;left:max(16px,env(safe-area-inset-left,0px))}
 .talk{position:fixed;z-index:6;left:50%;transform:translateX(-50%);bottom:calc(34px + env(safe-area-inset-bottom,0px));background:var(--ink);color:#fff;border-radius:999px;padding:12px 18px;font-weight:700;font-size:15px;box-shadow:0 8px 24px rgba(17,18,22,.3);animation:tin .2s;white-space:nowrap}
 .talk kbd{background:var(--lime);color:var(--ink);border-radius:6px;padding:1px 7px;margin-right:8px;font-family:inherit;font-weight:800}
@@ -164,6 +166,24 @@ p{margin:0}
 .medal b{font-family:var(--f-display);font-size:22px;font-weight:400;text-transform:uppercase}
 @keyframes medal{0%{opacity:0;transform:translate(-50%,-20px) scale(.8)}10%{opacity:1;transform:translate(-50%,0) scale(1.05)}15%{transform:translate(-50%,0) scale(1)}85%{opacity:1}100%{opacity:0}}
 #fxc{position:fixed;inset:0;z-index:40;pointer-events:none}
+.int{position:fixed;inset:0;z-index:15;background:#0E1230;color:#F4F5F0;display:flex;flex-direction:column;align-items:center;gap:12px;padding:calc(10px + env(safe-area-inset-top,0px)) max(12px,env(safe-area-inset-right,0px)) calc(14px + env(safe-area-inset-bottom,0px)) max(12px,env(safe-area-inset-left,0px));font-family:"Pixelify Sans",system-ui,sans-serif;overflow:auto;user-select:none}
+.int-top{width:min(640px,100%);display:flex;justify-content:space-between;align-items:center;gap:10px}
+.int-top b{font-family:"Press Start 2P",monospace;font-weight:400;font-size:11px;color:#E6FF3B;line-height:1.6}
+.int-top button{font-family:"Press Start 2P",monospace;font-size:10px;background:#1B2150;color:#F4F5F0;padding:10px 12px;border-radius:10px}
+#ic{width:min(640px,100%);height:auto;aspect-ratio:16/9;image-rendering:pixelated;border-radius:12px;background:#000;touch-action:none;display:block;box-shadow:0 0 0 2px #2E3A7A}
+.iu{width:min(640px,100%);display:flex;flex-direction:column;gap:10px}
+.pbox{position:relative;background:#F4F5F0;color:#111216;border-radius:12px;padding:18px 14px 12px;font-size:18px;line-height:1.35;min-height:84px;cursor:pointer}
+.pbox .nm{position:absolute;top:-11px;left:12px;background:#E6FF3B;font-family:"Press Start 2P",monospace;font-size:9px;padding:5px 8px}
+.pbox .more{display:block;text-align:right;font-family:"Press Start 2P",monospace;font-size:8px;color:#2F4BFF;margin-top:6px;animation:blink 1.2s infinite}
+.pbtn{--c:#E6FF3B;--d:#A9BD10;--t:#111216;display:flex;align-items:center;justify-content:center;gap:8px;padding:15px 8px 13px;border-radius:12px;background:var(--c);color:var(--t);box-shadow:0 5px 0 var(--d);font-family:"Press Start 2P",monospace;font-size:10px;letter-spacing:.03em;flex:1;touch-action:manipulation;line-height:1.4}
+.pbtn:active,.pbtn.down{transform:translateY(4px);box-shadow:0 1px 0 var(--d)}
+.pbtn.g{--c:#3AD67A;--d:#1F8F4C}.pbtn.r{--c:#FF3B4E;--d:#A8182A;--t:#fff}.pbtn.b{--c:#2F4BFF;--d:#1C2FB0;--t:#fff}.pbtn.o{--c:#FF5A1F;--d:#B83A0C;--t:#fff}.pbtn.n{--c:#1B2150;--d:#0B0E2A;--t:#F4F5F0}
+.prow{display:flex;gap:10px}
+.pres{background:#1B2150;border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:8px;text-align:center}
+.pres h3{font-family:"Press Start 2P",monospace;font-weight:400;font-size:14px;color:#E6FF3B;line-height:1.5;margin:0;text-transform:none}
+.pres p{font-size:17px}
+.pres .lst{text-align:left;font-size:15px;color:#C9CDE8;max-height:28vh;overflow:auto;display:flex;flex-direction:column;gap:4px}
+.prule{font-size:16px;color:#C9CDE8;text-align:center;line-height:1.4}
 .card.ex{gap:12px}
 .stmt{background:var(--soft);border-radius:12px;padding:14px;font-size:17px;line-height:1.45}
 .stmt .who{display:block;font-size:12px;font-weight:800;letter-spacing:.08em;text-transform:uppercase;color:var(--blue);margin-bottom:4px}
@@ -233,6 +253,8 @@ p{margin:0}
   </div>
 </div>
 <div class="side" id="side" hidden>
+  <div class="camrow"><button class="icon" id="bRotL" aria-label="Girar câmera para a esquerda"><svg viewBox="0 0 24 24" fill="none" stroke="#111216" stroke-width="2.2" stroke-linecap="round"><path d="M4 12a8 8 0 1 0 3-6.2"/><path d="M4 3v5h5"/></svg></button><button class="icon" id="bRotR" aria-label="Girar câmera para a direita"><svg viewBox="0 0 24 24" fill="none" stroke="#111216" stroke-width="2.2" stroke-linecap="round"><path d="M20 12a8 8 0 1 1-3-6.2"/><path d="M20 3v5h-5"/></svg></button></div>
+  <button class="icon" id="bZoom" aria-label="Aproximar ou afastar a câmera"><svg viewBox="0 0 24 24" fill="none" stroke="#111216" stroke-width="2.2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21M8 10.5h5M10.5 8v5"/></svg></button>
   <button class="icon" id="bMap" aria-label="Mapa da cidade"><svg viewBox="0 0 24 24" fill="none" stroke="#111216" stroke-width="2" stroke-linejoin="round"><path d="M3 6l6-2 6 2 6-2v14l-6 2-6-2-6 2z"/><path d="M9 4v14M15 6v14"/></svg></button>
   <button class="icon" id="bTrilha" aria-label="Sua jornada e medalhas"><svg viewBox="0 0 24 24" fill="none" stroke="#111216" stroke-width="2" stroke-linejoin="round"><path d="M7 4h10v5a5 5 0 0 1-10 0z"/><path d="M7 6H4a3 3 0 0 0 3 4M17 6h3a3 3 0 0 1-3 4M12 14v4M8 20h8"/></svg></button>
   <button class="icon" id="bLook" aria-label="Trocar visual"><svg viewBox="0 0 24 24" fill="none" stroke="#111216" stroke-width="2" stroke-linejoin="round"><path d="M8 3l4 2 4-2 5 4-3 3-2-1v12H8V9l-2 1-3-3z"/></svg></button>
@@ -241,7 +263,7 @@ p{margin:0}
 <button class="talk" id="talk" hidden></button>
 <canvas id="fxc"></canvas>
 <div id="joy" hidden><div id="knob"></div></div>
-<div class="hint" id="kbd" hidden>Mover: WASD ou setas · Falar: espaço</div>
+<div class="hint" id="kbd" hidden>Mover: WASD ou setas · Girar: arraste ou Q/R · Zoom: rolagem · Conversar ou entrar: E</div>
 <div class="dlg" id="dlg" hidden><span class="name" id="dName"></span><p class="text" id="dText"></p><div class="choices" id="dCh"></div><span class="more" id="dMore">Toque para continuar ▸</span></div>
 <div id="ovl"></div>
 
@@ -334,7 +356,7 @@ const OPT = {
 /* =========================================================
    ESTADO
    ========================================================= */
-const st0 = () => ({cap:0, nome:'', perfil:0, tema:'transporte', voz:0, ch:{}, rec:[], acertos:0, checks:0, xp:0, capXP:0, combo:0, medals:[], itens:[], megas:[], talked:[], visited:[],
+const st0 = () => ({cap:0, nome:'', perfil:0, tema:'transporte', voz:0, ch:{}, rec:[], acertos:0, checks:0, xp:0, capXP:0, combo:0, medals:[], itens:[], megas:[], talked:[], visited:[], side:{},
   skin:{pele:OPT.pele[1], cabelo:'afro', corCabelo:OPT.corCabelo[0], camisa:OPT.camisa[0], calca:OPT.calca[0], acess:'fone'}});
 let st = st0();
 const N = () => st.nome || 'Ari';
@@ -1102,6 +1124,7 @@ function frame(nowMs){
       if(keys['w']||keys['arrowup']) mz -= 1; if(keys['s']||keys['arrowdown']) mz += 1;
       mx += jv.x; mz += jv.y;
     }
+    { const cy = Math.cos(CAM.yaw), sy = Math.sin(CAM.yaw), wx = mx*cy + mz*sy, wz = -mx*sy + mz*cy; mx = wx; mz = wz; }
     const len = Math.hypot(mx,mz), moving = len > .12;
     if(moving){
       const sp = 8.5 * Math.min(1,len) / Math.max(1,len);
@@ -1119,9 +1142,11 @@ function frame(nowMs){
       p.x = Math.max(-60, Math.min(60, p.x)); p.z = Math.max(-58, Math.min(58, p.z));
     }
     animChar(player, moving, dt);
-    const k = camera.aspect < 1 ? 1.4 : 1; camTarget.set(player.position.x, 19*k, player.position.z+10.5*k);
-    camera.position.lerp(camTarget, 1-Math.exp(-dt*5));
-    camera.lookAt(player.position.x, 1, player.position.z-1);
+    { let d = CAM.yawT - CAM.yaw; CAM.yaw += d * Math.min(1, dt*8); CAM.zoom += (CAM.zoomT - CAM.zoom) * Math.min(1, dt*6); }
+    const k = (camera.aspect < 1 ? 1.4 : 1) * CAM.zoom, hk = Math.pow(CAM.zoom, 1.35) * (camera.aspect < 1 ? 1.4 : 1);
+    camTarget.set(player.position.x + Math.sin(CAM.yaw)*10.5*k, 19*hk + 1.5, player.position.z + Math.cos(CAM.yaw)*10.5*k);
+    camera.position.lerp(camTarget, 1-Math.exp(-dt*6));
+    camera.lookAt(player.position.x - Math.sin(CAM.yaw), 1.2, player.position.z - Math.cos(CAM.yaw));
 
     // NPCs olham para quem chega perto
     Object.values(NPCS).forEach(n=>{
@@ -1210,7 +1235,8 @@ const MEDALS = [
   {k:'pares', n:'Sabe quem decide', d:'Ligou os pares sem errar'},
   {k:'titulo', n:'Título na mão', d:'Fez o pedido do título'},
   {k:'denuncia', n:'Denúncia feita', d:'Denunciou a compra de voto'},
-  {k:'urna', n:'Primeiro voto', d:'Votou na simulação da urna'}
+  {k:'urna', n:'Primeiro voto', d:'Votou na simulação da urna'},
+  {k:'extras', n:'Faz-tudo', d:'Completou as 3 missões extras'}
 ];
 function medal(k){
   if(st.medals.includes(k)) return;
@@ -1224,7 +1250,7 @@ function medal(k){
 }
 
 /* itens de visual liberados nos baús */
-const LOCKED = [['acess','bone'],['camisa','#FF7AD9'],['acess','oculos'],['acess','mochila'],['camisa','#BFFF8A']];
+const LOCKED = [['acess','bone'],['camisa','#FF7AD9'],['acess','oculos'],['acess','mochila'],['camisa','#BFFF8A'],['corCabelo','#2F4BFF'],['camisa','#111216'],['corCabelo','#FF7AD9']];
 const REWARDS = [null,
   {o:'acess', v:'bone', nome:'Boné', cor:'#111216'},
   {o:'camisa', v:'#FF7AD9', nome:'Camiseta rosa', cor:'#FF7AD9'},
@@ -1401,15 +1427,15 @@ const SIDE = [
 ];
 const PLACE_INFO = {
   casa:{n:'Sua casa', d:'Onde a história começa. É aqui que chegam os documentos e o comprovante de residência que você vai usar para tirar o título.'},
-  camara:{n:'Câmara Municipal', d:'Onde vereadoras e vereadores votam as leis da cidade, aprovam o orçamento e fiscalizam a prefeitura. As sessões são abertas ao público.'},
+  camara:{n:'Câmara Municipal', d:'Onde vereadoras e vereadores votam as leis da cidade, aprovam o orçamento e fiscalizam a prefeitura. As sessões são abertas ao público. Dá pra entrar: tem missão extra lá dentro.'},
   cartorio:{n:'Cartório eleitoral', d:'Atendimento da Justiça Eleitoral: tirar ou transferir o título, coletar biometria e resolver pendências. É gratuito.'},
   escola:{n:'Escola', d:'Escola pública do bairro. No dia da eleição, vira local de votação, com seções, urnas e mesários.'},
   posto:{n:'Posto de saúde', d:'Unidade Básica de Saúde (UBS) do SUS, administrada pela prefeitura. É a porta de entrada do atendimento.'},
-  biblioteca:{n:'Biblioteca', d:'Lugar para pesquisar com calma: internet, jornais e ajuda para comparar candidatos e checar informações.'},
+  biblioteca:{n:'Biblioteca', d:'Lugar para pesquisar com calma: internet, jornais e ajuda para comparar candidatos e checar informações. Dá pra entrar: tem missão extra lá dentro.'},
   praca:{n:'Praça', d:'Ponto de encontro do bairro. É onde as conversas acontecem, e onde os boatos também circulam.', pos:V3(-20,0,-13)},
   ponto:{n:'Ponto de ônibus', d:'O transporte coletivo dentro da cidade é responsabilidade da prefeitura, que define linhas e horários.'},
   quadra:{n:'Quadra', d:'Espaço de esporte e lazer mantido pela prefeitura. O dinheiro para a reforma é votado na Câmara.'},
-  mercadinho:{n:'Mercadinho Bom Preço', d:'Comércio do bairro. Quem trabalha aqui ouve de tudo no balcão e sente no bolso cada decisão da cidade.'},
+  mercadinho:{n:'Mercadinho Bom Preço', d:'Comércio do bairro. Quem trabalha aqui ouve de tudo no balcão e sente no bolso cada decisão da cidade. Dá pra entrar: tem missão extra lá dentro.'},
   mural:{n:'Mural da Nina', d:'Arte feita pela vizinhança, com autorização da prefeitura. Um jeito de dizer que a cidade também é de quem mora nela.', pos:V3(12,0,-31)},
   tapioca:{n:'Tapioca da Dona Lúcia', d:'Há 20 anos na praça. Dona Lúcia anota num caderninho as promessas que os candidatos fazem por ali.', pos:V3(-12,0,-27)}
 };
@@ -1467,6 +1493,7 @@ function buildWorld2(){
     const g = makeChar(skins[i]); scene.add(g);
     WALKERS.push({g, axis, line, a, b, pos:a + (b-a)*((i*37)%100)/100, dir:i%2 ? 1 : -1, sp:1.8+i*.15});
   });
+  addDoorSigns();
 }
 function applySave(){
   st.megas.forEach(i=>{ if(MEGA_MESH[i]) MEGA_MESH[i].visible = false; });
@@ -1503,7 +1530,7 @@ function updateWorld(dt){
   });
   if(mode==='play'){ birdT -= dt; if(birdT <= 0){ SFX.bird(); birdT = 8 + Math.random()*12; } }
 }
-let nearNPC = null;
+let nearNPC = null, nearDoor = null;
 function checkNear(){
   if(ui.lock){ $('#talk').hidden = true; return; }
   const P = player.position;
@@ -1521,10 +1548,12 @@ function checkNear(){
       if(st.visited.length >= 8) medal('explorador');
     }
   });
-  nearNPC = null; let bd = 2.8;
+  nearNPC = null; nearDoor = null; let bd = 2.8;
   SIDE.forEach(n=>{ const c = NPCS[n.id], d = Math.hypot(c.position.x-P.x, c.position.z-P.z); if(d < bd){ bd = d; nearNPC = n; } });
+  Object.keys(INTER).forEach(k=>{ const p = PLACES[k]; if(!p) return; const d = Math.hypot(p.x-P.x, p.z-P.z); if(d < 3 && d < bd + .5){ bd = d; nearDoor = k; nearNPC = null; } });
   const tb = $('#talk');
-  if(nearNPC){ tb.hidden = false; tb.innerHTML = `<kbd>E</kbd>Conversar com ${esc(nearNPC.name)}`; }
+  if(nearDoor){ tb.hidden = false; tb.innerHTML = `<kbd>E</kbd>Entrar: ${esc(INTER[nearDoor].nome)}${st.side[nearDoor] ? '' : ' · missão extra'}`; }
+  else if(nearNPC){ tb.hidden = false; tb.innerHTML = `<kbd>E</kbd>Conversar com ${esc(nearNPC.name)}`; }
   else tb.hidden = true;
 }
 async function talkTo(n){
@@ -1537,8 +1566,298 @@ async function talkTo(n){
     if(st.talked.length >= 4) medal('papo');
   }
 }
-$('#talk').onclick = () => talkTo(nearNPC);
-addEventListener('keydown', e => { if(mode==='play' && !ui.lock && !ui.keyFn && nearNPC && (e.key==='e' || e.key==='E')) talkTo(nearNPC); });
+$('#talk').onclick = () => nearDoor ? enterPlace(nearDoor) : talkTo(nearNPC);
+addEventListener('keydown', e => { if(mode==='play' && !ui.lock && !ui.keyFn && (e.key==='e' || e.key==='E')){ if(nearDoor) enterPlace(nearDoor); else if(nearNPC) talkTo(nearNPC); } });
+
+/* =========================================================
+   CÂMERA: girar e aproximar
+   ========================================================= */
+const CAM = {yaw:0, yawT:0, zoom:1, zoomT:1};
+(() => {
+  const cv = $('#c'); let drag = null;
+  cv.addEventListener('pointerdown', e => { if(mode!=='play' || ui.lock) return; drag = {x:e.clientX, id:e.pointerId}; cv.setPointerCapture(e.pointerId); });
+  cv.addEventListener('pointermove', e => { if(!drag || e.pointerId!==drag.id) return; const dx = e.clientX - drag.x; drag.x = e.clientX; CAM.yawT -= dx*.008; CAM.yaw -= dx*.008; });
+  const end = e => { if(drag && e.pointerId===drag.id) drag = null; };
+  cv.addEventListener('pointerup', end); cv.addEventListener('pointercancel', end);
+  cv.addEventListener('wheel', e => { if(mode!=='play') return; e.preventDefault(); CAM.zoomT = Math.max(.55, Math.min(1.6, CAM.zoomT * (e.deltaY > 0 ? 1.1 : .9))); }, {passive:false});
+  $('#bRotL').onclick = () => { CAM.yawT += Math.PI/4; SFX.click(); };
+  $('#bRotR').onclick = () => { CAM.yawT -= Math.PI/4; SFX.click(); };
+  const Z = [1, .62, 1.45]; let zi = 0;
+  $('#bZoom').onclick = () => { zi = (zi+1) % Z.length; CAM.zoomT = Z[zi]; SFX.click(); toast(['Câmera normal','Câmera de perto','Câmera de longe'][zi]); };
+  addEventListener('keydown', e => { if(mode!=='play' || ui.keyFn || ui.lock) return; if(e.key==='q' || e.key==='Q') CAM.yawT += Math.PI/4; if(e.key==='r' || e.key==='R') CAM.yawT -= Math.PI/4; });
+})();
+
+/* =========================================================
+   INTERIORES 2D: missões extras e minijogos em pixel art
+   ========================================================= */
+const PX_PERSON = ['...HHHH...','..HHHHHH..','..HSSSSH..','..SKSSKS..','..SSSSSS..','...SSSS...','..TTTTTT..','.TTTTTTTT.','.STTTTTTS.','.STTTTTTS.','..TTTTTT..','..PPPPPP..','..PP..PP..','..PP..PP..','..PP..PP..','.KKK..KKK.'];
+const personPal = s => ({H:s.corCabelo, S:s.pele, K:'#111216', T:s.camisa, P:s.calca});
+function pxPerson(ctx, x, y, s, pal, flip){
+  PX_PERSON.forEach((r,j)=>{ for(let i=0;i<10;i++){ const c = pal[r[flip ? 9-i : i]]; if(!c) continue; ctx.fillStyle = c; ctx.fillRect(x+i*s, y+j*s, s, s); } });
+}
+const NIVEL = ['Município','Estado','União'];
+const INTER = {
+  mercadinho:{nome:'Mercadinho Bom Preço', npc:{nome:'Seu Antônio', pal:{H:'#E8E8E8',S:'#B97A50',K:'#111216',T:'#FF5A1F',P:'#1F2433'}},
+    intro:['Ô, que bom te ver! O grupo de WhatsApp do bairro virou uma chuva de corrente.','O povo chega aqui no balcão repetindo cada coisa... Me ajuda a separar o que é verdade do que é boato?'],
+    jogo:'chuva', titulo:'Chuva de correntes', regra:'Pegue só as mensagens verdadeiras com a cesta e deixe os boatos caírem. Três boatos na cesta e acabou.',
+    premio:['corCabelo','#2F4BFF','Cabelo azul']},
+  biblioteca:{nome:'Biblioteca do bairro', npc:{nome:'Dona Graça', pal:{H:'#4A2C1A',S:'#E0AC82',K:'#111216',T:'#BFFF8A',P:'#6B4E3D'}},
+    intro:['Psiu... aqui é a biblioteca. Mas pode falar baixinho.','Todo dia alguém me pergunta se um site é oficial. Topa um desafio? Eu mostro o endereço e você diz se é oficial ou falso.'],
+    jogo:'sites', titulo:'Detector de sites', regra:'Olhe o fim do endereço e responda antes do tempo acabar.',
+    premio:['camisa','#111216','Camiseta preta']},
+  camara:{nome:'Câmara Municipal', npc:{nome:'Dona Socorro', pal:{H:'#E8E8E8',S:'#8A5634',K:'#111216',T:'#FFFFFF',P:'#2F4BFF'}},
+    intro:['Entra, entra! Hoje a esteira de pedidos do bairro está lotada.','Cada pedido precisa ir para quem decide: Município, Estado ou União. Me ajuda a despachar?'],
+    jogo:'esteira', titulo:'Esteira de pedidos', regra:'Mande cada pedido para quem decide antes que ele chegue ao fim da esteira.',
+    premio:['corCabelo','#FF7AD9','Cabelo rosa']}
+};
+const CORRENTES = [
+  ['O cadastro eleitoral fecha 150 dias antes da eleição', true, 'Regra da Lei das Eleições.'],
+  ['Voto pela internet liberado este ano!', false, 'No Brasil se vota na urna, na sua seção.'],
+  ['Tirar o título é de graça', true, 'Não existe taxa para tirar o título.'],
+  ['Quem não fizer biometria vai perder o CPF', false, 'O CPF é da Receita Federal, não da Justiça Eleitoral.'],
+  ['A urna eletrônica fica ligada na internet', false, 'A urna não é conectada à internet.'],
+  ['Na cabine, o celular fica com o mesário', true, 'É a regra no dia da votação.'],
+  ['Pode levar colinha de papel para votar', true, 'A cola em papel é permitida.'],
+  ['A votação vai durar dois dias', false, 'É um dia só, para todo mundo.'],
+  ['Se metade anular, a eleição é cancelada', false, 'Votos nulos não cancelam a eleição.'],
+  ['Com 16 e 17 anos o voto é opcional', true, 'O voto é facultativo até os 18.'],
+  ['Sua seção mudou: confirme seus dados no link', false, 'Golpe. Confira o local no app e-Título.'],
+  ['Dá pra ver o local de votação no e-Título', true, 'O app mostra local e seção.']
+];
+const SITES = [['tse.jus.br',true],['tse-eleitor-atualiza.com',false],['camara.leg.br',true],['titulo-eleitoral-gratis.net',false],['gov.br',true],['tse.jus.br.regularize.co',false],['senado.leg.br',true],['justica-eleitoral.online',false],['divulgacandcontas.tse.jus.br',true],['e-titulo-app.download',false],['tre-ce.jus.br',true],['tse.jus.br-confirmar.site',false]];
+const PEDIDOS = [['Posto de saúde (UBS)',0],['Polícia Militar',1],['Lei da Meia-Entrada',2],['Ônibus da cidade',0],['Ensino médio público',1],['Passaporte',2],['Iluminação da rua',0],['Ônibus entre cidades',1],['Universidades federais',2],['Coleta de lixo',0],['Correios',2],['Presídios estaduais',1]];
+const shuffle = a => { for(let i=a.length-1;i>0;i--){ const j = Math.floor(Math.random()*(i+1)); [a[i],a[j]] = [a[j],a[i]]; } return a; };
+function wrapTxt(ctx, text, maxW){
+  const words = text.split(' '), lines = []; let cur = '';
+  words.forEach(w=>{ const tr = cur ? cur+' '+w : w; if(ctx.measureText(tr).width > maxW && cur){ lines.push(cur); cur = w; } else cur = tr; });
+  if(cur) lines.push(cur); return lines;
+}
+
+let IN = null;
+function drawRoom(ctx, k, t, dim){
+  ctx.fillStyle = '#0E1230'; ctx.fillRect(0,0,320,180);
+  const wall = {mercadinho:'#FFE9A8', biblioteca:'#E8CCFF', camara:'#C9D6FF'}[k];
+  ctx.fillStyle = wall; ctx.fillRect(0,0,320,112);
+  ctx.fillStyle = 'rgba(17,18,22,.08)'; for(let x=0;x<320;x+=16) ctx.fillRect(x,0,1,112);
+  for(let y=112;y<180;y+=12) for(let x=0;x<320;x+=16){ ctx.fillStyle = ((x/16 + (y-112)/12) % 2) ? '#D9D4C7' : '#E9E6DA'; ctx.fillRect(x,y,16,12); }
+  ctx.fillStyle = '#111216'; ctx.fillRect(0,111,320,2);
+  if(k==='mercadinho'){
+    [[14,30],[114,30],[214,30]].forEach(([x,y],s)=>{ ctx.fillStyle='#8A6448'; ctx.fillRect(x,y,90,78); ctx.fillStyle='#C98B55'; [0,1,2].forEach(r=>ctx.fillRect(x+4,y+22+r*24,82,4));
+      const cols = ['#FF5A1F','#2F4BFF','#3AD67A','#FF7AD9','#E6FF3B','#FFFFFF'];
+      for(let r=0;r<3;r++) for(let i=0;i<7;i++){ ctx.fillStyle = cols[(i+r*2+s)%6]; ctx.fillRect(x+6+i*11, y+8+r*24, 8, 14); } });
+    ctx.fillStyle='#FF5A1F'; ctx.fillRect(110,6,100,18); ctx.fillStyle='#fff'; ctx.font='8px "Press Start 2P", monospace'; ctx.textAlign='center'; ctx.fillText('BOM PREÇO',160,19);
+  }
+  if(k==='biblioteca'){
+    const cols = ['#2F4BFF','#FF5A1F','#3AD67A','#FF7AD9','#E6FF3B','#8B5CF6','#111216'];
+    for(let s=0;s<4;s++){ const x = 8+s*78; ctx.fillStyle='#6B4E3D'; ctx.fillRect(x,14,70,94);
+      for(let r=0;r<4;r++){ ctx.fillStyle='#4A3628'; ctx.fillRect(x+3,14+r*23+21,64,2); for(let i=0;i<9;i++){ ctx.fillStyle = cols[(i*3+r*5+s*2)%7]; const h = 14+((i*7+r*3+s)%5); ctx.fillRect(x+5+i*7, 14+r*23+21-h, 6, h); } } }
+  }
+  if(k==='camara'){
+    ctx.fillStyle='#2F4BFF'; ctx.fillRect(60,8,200,20); ctx.fillStyle='#fff'; ctx.font='8px "Press Start 2P", monospace'; ctx.textAlign='center'; ctx.fillText('CÂMARA MUNICIPAL',160,22);
+    ctx.fillStyle='#009B3A'; ctx.fillRect(14,30,46,32); ctx.fillStyle='#FEDF00'; ctx.beginPath(); ctx.moveTo(37,33); ctx.lineTo(57,46); ctx.lineTo(37,59); ctx.lineTo(17,46); ctx.fill(); ctx.fillStyle='#002776'; ctx.beginPath(); ctx.arc(37,46,8,0,Math.PI*2); ctx.fill();
+    ctx.fillStyle='#8A6448'; ctx.fillRect(130,60,60,52); ctx.fillStyle='#C98B55'; ctx.fillRect(126,56,68,8);
+    for(let i=0;i<5;i++){ ctx.fillStyle='#6B4E3D'; ctx.fillRect(8+i*64,94,52,16); ctx.fillStyle='#8A6448'; ctx.fillRect(8+i*64,90,52,5); }
+  }
+  if(dim){ ctx.fillStyle = 'rgba(14,18,48,.55)'; ctx.fillRect(0,0,320,180); }
+}
+function drawPeople(ctx, t){
+  pxPerson(ctx, 64, 112 + (Math.floor(t*2) % 2), 4, personPal(st.skin));
+  pxPerson(ctx, 220, 112 + (Math.floor(t*2+1) % 2), 4, IN.d.npc.pal, true);
+}
+function sceneLoop(){
+  const f = now => { if(!IN || IN.game) return; drawRoom(IN.ctx, IN.k, now/1000); drawPeople(IN.ctx, now/1000); IN.raf = requestAnimationFrame(f); };
+  IN.raf = requestAnimationFrame(f);
+}
+function enterPlace(k){
+  if(ui.lock || IN) return;
+  ui.lock++; $('#talk').hidden = true; SFX.medal();
+  const d = INTER[k], el = document.createElement('div');
+  el.className = 'int'; el.setAttribute('role','dialog'); el.setAttribute('aria-label', d.nome);
+  el.innerHTML = `<div class="int-top"><b>${esc(d.nome).toUpperCase()}</b><button id="intx">Sair</button></div><canvas id="ic" width="640" height="360" aria-label="Interior: ${esc(d.nome)}"></canvas><div class="iu" id="iu"></div>`;
+  document.body.appendChild(el);
+  const cv = el.querySelector('#ic'), ctx = cv.getContext('2d'); ctx.setTransform(2,0,0,2,0,0); ctx.imageSmoothingEnabled = false;
+  IN = {k, d, el, cv, ctx, raf:0, game:null, off:[]};
+  el.querySelector('#intx').onclick = exitPlace;
+  if(!st.visited.includes(k)){ st.visited.push(k); }
+  sceneLoop(); talkSeq();
+}
+function exitPlace(){
+  if(!IN) return;
+  cancelAnimationFrame(IN.raf); IN.off.forEach(f=>f()); IN.el.remove(); IN = null;
+  ui.lock = Math.max(0, ui.lock-1); ui.keyFn = null; SFX.click(); save();
+}
+function pSay(name, text){
+  return new Promise(res=>{
+    if(!IN) return res();
+    const iu = $('#iu');
+    iu.innerHTML = `<div class="pbox" id="pb"><span class="nm">${esc(name).toUpperCase()}</span><span id="pt"></span><span class="more" id="pm" hidden>TOQUE ▸</span></div>`;
+    const pt = $('#pt'), pm = $('#pm'); let i = 0, done = false;
+    const iv = setInterval(()=>{ i += 2; pt.textContent = text.slice(0,i); if(i%4===0) SFX.talk(240); if(i >= text.length){ clearInterval(iv); done = true; pm.hidden = false; } }, 22);
+    const adv = () => { if(!done){ clearInterval(iv); pt.textContent = text; done = true; pm.hidden = false; return; } ui.keyFn = null; SFX.click(); res(); };
+    $('#pb').onclick = adv; ui.keyFn = e => { if(e.key===' ' || e.key==='Enter'){ e.preventDefault(); adv(); } if(e.key==='Escape') exitPlace(); };
+  });
+}
+async function talkSeq(){
+  const d = IN.d, rec = st.side[IN.k];
+  const lines = rec ? [`Voltou! Seu recorde aqui é de ${rec} pontos. Quer tentar bater?`] : d.intro;
+  for(const l of lines){ await pSay(d.npc.nome, l); if(!IN) return; }
+  menuMini();
+}
+function menuMini(){
+  const d = IN.d;
+  $('#iu').innerHTML = `<p class="prule"><b>${esc(d.titulo)}.</b> ${esc(d.regra)}</p><div class="prow"><button class="pbtn g" id="pg">Jogar</button><button class="pbtn n" id="ps">Agora não</button></div>`;
+  $('#pg').onclick = runMini; $('#ps').onclick = exitPlace;
+  ui.keyFn = e => { if(e.key==='Enter') runMini(); if(e.key==='Escape') exitPlace(); };
+}
+function runMini(){
+  if(!IN) return; SFX.ok(); cancelAnimationFrame(IN.raf); IN.game = true;
+  ({chuva:miniChuva, sites:miniSites, esteira:miniEsteira})[IN.d.jogo](finishMini);
+}
+function finishMini(r){
+  if(!IN) return;
+  cancelAnimationFrame(IN.raf); IN.off.forEach(f=>f()); IN.off = []; IN.game = null; ui.keyFn = null;
+  const first = !st.side[IN.k]; st.side[IN.k] = Math.max(st.side[IN.k] || 0, r.score, 1);
+  xp(10 + r.acertos*3, IN.d.titulo.toLowerCase());
+  let premio = '';
+  if(first){ const [o,v,nome] = IN.d.premio; if(!st.itens.includes(o+':'+v)) st.itens.push(o+':'+v); premio = `<p>Recompensa nova no seu visual: <b>${esc(nome)}</b>.</p>`; setTimeout(()=>SFX.chest(), 400); }
+  if(Object.keys(INTER).every(k=>st.side[k])) medal('extras');
+  const good = r.acertos >= Math.ceil(r.total*.7);
+  if(good) SFX.win(); else SFX.no();
+  $('#iu').innerHTML = `<div class="pres"><h3>${good ? 'MISSÃO CUMPRIDA!' : 'FIM DE JOGO'}</h3><p>${r.acertos} de ${r.total} certos · ${r.score} pontos${st.side[IN.k]===r.score && !first ? ' · novo recorde!' : ''}</p>${premio}${r.lst ? `<div class="lst">${r.lst}</div>` : ''}</div><div class="prow"><button class="pbtn g" id="pa">Jogar de novo</button><button class="pbtn n" id="px">Sair</button></div>`;
+  $('#pa').onclick = runMini; $('#px').onclick = exitPlace;
+  ui.keyFn = e => { if(e.key==='Enter') runMini(); if(e.key==='Escape') exitPlace(); };
+  sceneLoop(); save();
+}
+function hearts(ctx, n){ for(let i=0;i<3;i++){ ctx.fillStyle = i < n ? '#FF3B4E' : '#3A2040'; ctx.fillRect(8+i*14,8,10,8); ctx.fillRect(9+i*14,7,3,1); ctx.fillRect(14+i*14,7,3,1); ctx.fillRect(10+i*14,16,6,2); } }
+function hudTxt(ctx, txt){ ctx.font = '8px "Press Start 2P", monospace'; ctx.textAlign = 'right'; ctx.fillStyle = '#FFFFFF'; ctx.fillText(txt, 312, 16); ctx.textAlign = 'left'; }
+function addKeys(down, up){ const d = e => down(e), u = e => up && up(e); addEventListener('keydown', d); addEventListener('keyup', u); IN.off.push(()=>{ removeEventListener('keydown', d); removeEventListener('keyup', u); }); }
+
+/* minijogo 1: Chuva de correntes */
+function miniChuva(finish){
+  const ctx = IN.ctx, cv = IN.cv, queue = shuffle(CORRENTES.map(c=>({txt:c[0], v:c[1], why:c[2]}))), live = [], parts = [];
+  let px = 160, dir = 0, spawn = .2, life = 3, score = 0, combo = 0, acertos = 0, msg = 'Pegue as verdadeiras!', msgC = '#E6FF3B', msgT = 2, flash = 0, last = performance.now(), lst = [];
+  $('#iu').innerHTML = `<div class="prow"><button class="pbtn n" id="gl" aria-label="Mover para a esquerda">◀</button><button class="pbtn n" id="gr" aria-label="Mover para a direita">▶</button></div><p class="prule">Setas ou arraste na tela para mover a cesta.</p>`;
+  const hold = (id, v) => { const b = $(id); const on = e => { e.preventDefault(); dir = v; b.classList.add('down'); }, off = () => { if(dir===v) dir = 0; b.classList.remove('down'); };
+    b.addEventListener('pointerdown', on); b.addEventListener('pointerup', off); b.addEventListener('pointerleave', off); b.addEventListener('pointercancel', off); };
+  hold('#gl', -1); hold('#gr', 1);
+  addKeys(e => { if(['ArrowLeft','a','A'].includes(e.key)) dir = -1; if(['ArrowRight','d','D'].includes(e.key)) dir = 1; if(e.key==='Escape') exitPlace(); }, e => { if(['ArrowLeft','a','A','ArrowRight','d','D'].includes(e.key)) dir = 0; });
+  const pm = e => { if(e.buttons || e.pointerType==='touch'){ const r = cv.getBoundingClientRect(); px = Math.max(24, Math.min(296, (e.clientX - r.left) / r.width * 320)); } };
+  cv.addEventListener('pointermove', pm); cv.addEventListener('pointerdown', pm); IN.off.push(()=>{ cv.removeEventListener('pointermove', pm); cv.removeEventListener('pointerdown', pm); });
+  ctx.font = '9px "Pixelify Sans", sans-serif';
+  const say = (m, c) => { msg = m; msgC = c; msgT = 2.2; };
+  const f = now => {
+    if(!IN) return; const dt = Math.min(.05, (now-last)/1000); last = now;
+    px = Math.max(24, Math.min(296, px + dir*150*dt));
+    spawn -= dt;
+    if(spawn <= 0 && queue.length){ const m = queue.shift(); ctx.font = '9px "Pixelify Sans", sans-serif'; m.lines = wrapTxt(ctx, m.txt, 136); m.w = 148; m.h = 8 + m.lines.length*11; m.x = 10 + Math.random()*(300-m.w); m.y = -m.h; m.sp = 15 + (12-queue.length)*.9; live.push(m); spawn = 2.6; }
+    for(const m of live){
+      m.y += m.sp*dt;
+      const bottom = m.y + m.h, cx = m.x + m.w/2;
+      if(!m.done && bottom >= 102 && bottom <= 118 && Math.abs(cx - px) < m.w/2 + 16){
+        m.done = true;
+        if(m.v){ combo++; acertos++; score += 10 + (combo>=2 ? 5 : 0); SFX.right(combo); say(combo>=2 ? `Verdade! Combo x${combo}` : 'Verdade! Pegou.', '#3AD67A'); for(let i=0;i<14;i++) parts.push({x:px, y:104, vx:(Math.random()-.5)*120, vy:-Math.random()*120, l:.6, c:'#3AD67A'}); lst.push(`✓ ${m.txt}`); }
+        else { life--; combo = 0; flash = .25; SFX.wrong(); say(`Boato! ${m.why}`, '#FF8E9C'); lst.push(`✕ Pegou um boato: ${m.txt}. ${m.why}`); }
+      }
+      if(!m.done && m.y > 180){
+        m.done = true;
+        if(m.v){ combo = 0; say(`Era verdade: ${m.why}`, '#FFC93C'); lst.push(`… Deixou cair uma verdade: ${m.txt}`); }
+        else { acertos++; score += 5; say('Boato evitado!', '#3AD67A'); lst.push(`✓ Evitou o boato: ${m.txt}`); }
+      }
+    }
+    for(let i=live.length-1;i>=0;i--) if(live[i].done) live.splice(i,1);
+    drawRoom(ctx, 'mercadinho', now/1000, true);
+    for(const m of live){
+      ctx.fillStyle = '#F4F5F0'; ctx.fillRect(m.x, m.y, m.w, m.h); ctx.fillStyle = '#111216'; ctx.fillRect(m.x, m.y+m.h, m.w, 2); ctx.fillRect(m.x+10, m.y+m.h, 6, 5);
+      ctx.fillStyle = '#3AD67A'; ctx.fillRect(m.x, m.y, 4, m.h);
+      ctx.fillStyle = '#111216'; ctx.font = '9px "Pixelify Sans", sans-serif'; ctx.textAlign = 'left'; m.lines.forEach((l,j)=>ctx.fillText(l, m.x+8, m.y+11+j*11));
+    }
+    pxPerson(ctx, px-20, 116, 4, personPal(st.skin));
+    ctx.fillStyle = '#8A6448'; ctx.fillRect(px-18, 104, 36, 12); ctx.fillStyle = '#C98B55'; ctx.fillRect(px-18, 104, 36, 3);
+    for(let i=parts.length-1;i>=0;i--){ const p = parts[i]; p.x += p.vx*dt; p.y += p.vy*dt; p.vy += 300*dt; p.l -= dt; if(p.l<=0){ parts.splice(i,1); continue; } ctx.fillStyle = p.c; ctx.fillRect(p.x, p.y, 3, 3); }
+    hearts(ctx, life); hudTxt(ctx, `${score} PTS`);
+    if(msgT > 0){ msgT -= dt; ctx.font = '9px "Pixelify Sans", sans-serif'; const w = Math.min(300, ctx.measureText(msg).width + 16); ctx.fillStyle = 'rgba(14,18,48,.9)'; ctx.fillRect(160-w/2, 22, w, 15); ctx.fillStyle = msgC; ctx.textAlign = 'center'; ctx.fillText(msg, 160, 33); ctx.textAlign = 'left'; }
+    if(flash > 0){ flash -= dt; ctx.fillStyle = 'rgba(255,59,78,.3)'; ctx.fillRect(0,0,320,180); }
+    if(life <= 0 || (!queue.length && !live.length)) return finish({score, acertos, total:CORRENTES.length, lst:lst.map(l=>`<p>${esc(l)}</p>`).join('')});
+    IN.raf = requestAnimationFrame(f);
+  };
+  IN.raf = requestAnimationFrame(f);
+}
+
+/* minijogo 2: Detector de sites */
+function miniSites(finish){
+  const ctx = IN.ctx, list = shuffle(SITES.slice()); let i = 0, tl = 7, score = 0, combo = 0, acertos = 0, fb = null, fbT = 0, last = performance.now(), lst = [];
+  $('#iu').innerHTML = `<div class="prow"><button class="pbtn g" id="so">◀ Oficial</button><button class="pbtn r" id="sf">Falso ▶</button></div><p class="prule">Dica: sites da Justiça Eleitoral terminam em .jus.br; do Legislativo, em .leg.br; do governo federal, em gov.br.</p>`;
+  const why = (u, v) => { const end = u.split('.').pop(); return v ? `termina em ${u.endsWith('gov.br') && !u.endsWith('.jus.br') && !u.endsWith('.leg.br') ? 'gov.br' : u.endsWith('.jus.br') ? '.jus.br' : '.leg.br'}` : `termina em .${end}`; };
+  const answer = ans => {
+    if(fb || i >= list.length) return;
+    const [u, v] = list[i], ok = ans === v;
+    if(ok){ combo++; acertos++; score += 10 + Math.round(tl*2) + (combo>=2 ? 5 : 0); SFX.right(combo); fb = {ok:true, t:`${v ? 'OFICIAL' : 'FALSO'}: ${why(u,v)}`}; lst.push(`✓ ${u} (${v ? 'oficial' : 'falso'})`); }
+    else { combo = 0; SFX.wrong(); fb = {ok:false, t: ans===null ? `Tempo! Era ${v ? 'oficial' : 'falso'}: ${why(u,v)}` : `Era ${v ? 'oficial' : 'falso'}: ${why(u,v)}`}; lst.push(`✕ ${u}: ${v ? 'oficial' : 'falso'}, ${why(u,v)}`); }
+    fbT = 1.5;
+  };
+  $('#so').onclick = () => answer(true); $('#sf').onclick = () => answer(false);
+  addKeys(e => { if(['ArrowLeft','1'].includes(e.key)) answer(true); if(['ArrowRight','2'].includes(e.key)) answer(false); if(e.key==='Escape') exitPlace(); });
+  const f = now => {
+    if(!IN) return; const dt = Math.min(.05, (now-last)/1000); last = now;
+    if(fb){ fbT -= dt; if(fbT <= 0){ fb = null; i++; tl = Math.max(4, 7 - i*.3); } }
+    else { tl -= dt; if(tl <= 0) answer(null); }
+    drawRoom(ctx, 'biblioteca', now/1000, true);
+    ctx.fillStyle = '#2A2D3A'; ctx.fillRect(40,22,240,128); ctx.fillStyle = '#F4F5F0'; ctx.fillRect(48,30,224,104);
+    ctx.fillStyle = '#2A2D3A'; ctx.fillRect(140,150,40,10); ctx.fillRect(120,158,80,6);
+    ctx.fillStyle = '#DCDEE6'; ctx.fillRect(56,40,208,22); ctx.fillStyle = '#5A5D6B'; ctx.fillRect(62,47,6,8); ctx.fillRect(61,44,8,4);
+    if(i < list.length){
+      const u = list[i][0]; let fs = 12; ctx.font = `${fs}px "Pixelify Sans", sans-serif`; while(ctx.measureText(u).width > 186 && fs > 7){ fs--; ctx.font = `${fs}px "Pixelify Sans", sans-serif`; }
+      ctx.fillStyle = '#111216'; ctx.textAlign = 'left'; ctx.fillText(u, 74, 55);
+      ctx.fillStyle = '#DCDEE6'; ctx.fillRect(56,70,208,6); ctx.fillStyle = tl > 2 ? '#2F4BFF' : '#FF3B4E'; if(!fb) ctx.fillRect(56,70,208*Math.max(0,tl)/Math.max(4, 7 - i*.3),6);
+      ctx.font = '8px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillStyle = '#5A5D6B'; ctx.fillText(`SITE ${i+1} DE ${list.length}`, 160, 96);
+      if(fb){ ctx.fillStyle = fb.ok ? '#3AD67A' : '#FF3B4E'; ctx.fillRect(56,104,208,24); ctx.fillStyle = fb.ok ? '#111216' : '#fff'; ctx.font = '9px "Pixelify Sans", sans-serif'; ctx.fillText(fb.t, 160, 120); }
+      ctx.textAlign = 'left';
+    }
+    hudTxt(ctx, `${score} PTS${combo>=2 ? ' x'+combo : ''}`);
+    if(i >= list.length) return finish({score, acertos, total:list.length, lst:lst.map(l=>`<p>${esc(l)}</p>`).join('')});
+    IN.raf = requestAnimationFrame(f);
+  };
+  IN.raf = requestAnimationFrame(f);
+}
+
+/* minijogo 3: Esteira de pedidos */
+function miniEsteira(finish){
+  const ctx = IN.ctx, list = shuffle(PEDIDOS.slice()); let i = 0, x = -130, life = 3, score = 0, combo = 0, acertos = 0, fly = null, msg = 'Mande cada pedido para quem decide', msgC = '#E6FF3B', msgT = 2.5, flash = 0, belt = 0, last = performance.now(), lst = [], counts = [0,0,0];
+  $('#iu').innerHTML = `<div class="prow"><button class="pbtn o" data-n="0">1 · Município</button><button class="pbtn b" data-n="1">2 · Estado</button><button class="pbtn g" data-n="2">3 · União</button></div>`;
+  const next = () => { i++; x = -130; };
+  const answer = n => {
+    if(fly || i >= list.length) return;
+    const [txt, ans] = list[i];
+    if(n === ans){ combo++; acertos++; counts[n]++; score += 10 + (combo>=2 ? 5 : 0); SFX.right(combo); fly = {n, x, y:126, t:0}; msg = combo>=2 ? `Certo! Combo x${combo}` : `Certo: ${NIVEL[ans]}`; msgC = '#3AD67A'; lst.push(`✓ ${txt}: ${NIVEL[ans]}`); }
+    else { life--; combo = 0; flash = .25; SFX.wrong(); msg = `${txt} é com ${ans===2 ? 'a' : 'o'} ${NIVEL[ans]}`; msgC = '#FF8E9C'; lst.push(`✕ ${txt}: é ${NIVEL[ans]}`); next(); }
+    msgT = 2.2;
+  };
+  $('#iu').querySelectorAll('[data-n]').forEach(b=>b.onclick = () => answer(+b.dataset.n));
+  addKeys(e => { const n = parseInt(e.key,10)-1; if(n>=0 && n<3) answer(n); if(e.key==='Escape') exitPlace(); });
+  const BX = [40,130,220], BC = ['#FF5A1F','#2F4BFF','#3AD67A'];
+  const f = now => {
+    if(!IN) return; const dt = Math.min(.05, (now-last)/1000); last = now;
+    belt = (belt + dt*40) % 16;
+    if(fly){ fly.t += dt; if(fly.t > .45){ fly = null; next(); } }
+    else if(i < list.length){ x += (34 + i*3)*dt; if(x > 300){ const [txt, ans] = list[i]; life--; combo = 0; flash = .25; SFX.wrong(); msg = `Passou do prazo! Era ${NIVEL[ans]}`; msgC = '#FFC93C'; msgT = 2.2; lst.push(`… ${txt}: era ${NIVEL[ans]}`); next(); } }
+    drawRoom(ctx, 'camara', now/1000, true);
+    BX.forEach((bx,k)=>{ ctx.fillStyle = BC[k]; ctx.fillRect(bx, 40, 70, 30); ctx.fillStyle = '#111216'; ctx.fillRect(bx, 70, 70, 3); ctx.fillStyle = '#fff'; ctx.font = '7px "Press Start 2P", monospace'; ctx.textAlign = 'center'; ctx.fillText(NIVEL[k].toUpperCase(), bx+35, 54); ctx.fillText(String(counts[k]), bx+35, 65); });
+    ctx.fillStyle = '#2A2D3A'; ctx.fillRect(0,138,320,18); ctx.fillStyle = '#4A4D5A'; for(let s=-16;s<320;s+=16) ctx.fillRect(s+belt, 140, 8, 14);
+    ctx.fillStyle = '#FF3B4E'; ctx.fillRect(300,118,4,38);
+    const drawItem = (ix, iy, txt) => { ctx.font = '9px "Pixelify Sans", sans-serif'; const w = Math.max(90, ctx.measureText(txt).width + 16); ctx.fillStyle = '#C98B55'; ctx.fillRect(ix, iy, w, 20); ctx.fillStyle = '#111216'; ctx.fillRect(ix, iy+20, w, 2); ctx.fillStyle = '#111216'; ctx.textAlign = 'left'; ctx.fillText(txt, ix+8, iy+14); };
+    if(fly){ const k = fly.t/.45, tx = BX[fly.n] + 10, ty = 44; drawItem(fly.x + (tx-fly.x)*k, fly.y + (ty-fly.y)*k - Math.sin(k*Math.PI)*30, list[i][0]); }
+    else if(i < list.length) drawItem(x, 118, list[i][0]);
+    hearts(ctx, life); hudTxt(ctx, `${score} PTS`);
+    if(msgT > 0){ msgT -= dt; ctx.font = '9px "Pixelify Sans", sans-serif'; const w = Math.min(300, ctx.measureText(msg).width + 16); ctx.fillStyle = 'rgba(14,18,48,.9)'; ctx.fillRect(160-w/2, 84, w, 15); ctx.fillStyle = msgC; ctx.textAlign = 'center'; ctx.fillText(msg, 160, 95); ctx.textAlign = 'left'; }
+    if(flash > 0){ flash -= dt; ctx.fillStyle = 'rgba(255,59,78,.3)'; ctx.fillRect(0,0,320,180); }
+    if(life <= 0 || i >= list.length) return finish({score, acertos, total:list.length, lst:lst.map(l=>`<p>${esc(l)}</p>`).join('')});
+    IN.raf = requestAnimationFrame(f);
+  };
+  IN.raf = requestAnimationFrame(f);
+}
+function addDoorSigns(){
+  ['mercadinho','biblioteca','camara'].forEach(k=>{ const p = PLACES[k]; if(!p) return; const s = labelSprite('ENTRAR', '#E6FF3B', '#111216', .7); s.position.set(p.x, 3.4, p.z); scene.add(s); });
+}
 
 /* mapa da cidade */
 function mapSVG(sel){
@@ -1577,7 +1896,7 @@ function journeyScreen(){
     <ul class="journey">${CAPS.map((c,i)=>{ const n = i+1, cls = n < st.cap ? 'done' : n===st.cap ? 'cur' : ''; return `<li class="${cls}"><span class="dot">${n < st.cap ? '✓' : n}</span><span>${c}${n===st.cap ? ' · agora' : ''}</span></li>`; }).join('')}</ul>
     <span class="k">Medalhas ${st.medals.length}/${MEDALS.length}</span>
     <div class="medals">${MEDALS.map(m=>`<div class="${st.medals.includes(m.k)?'':'off'}" title="${m.d}">${MEDAL_SVG}<span>${m.n}</span></div>`).join('')}</div>
-    <p class="note">Megafones: ${st.megas.length}/${MEGAS.length} · Lugares: ${st.visited.length}/${PLACE_KEYS.length} · Moradores: ${st.talked.length}/${SIDE.length} · Ofensiva: ${streakGet()} ${streakGet()===1?'dia':'dias'}</p>
+    <p class="note">Megafones: ${st.megas.length}/${MEGAS.length} · Lugares: ${st.visited.length}/${PLACE_KEYS.length} · Moradores: ${st.talked.length}/${SIDE.length} · Missões extras: ${Object.keys(st.side).length}/3 · Ofensiva: ${streakGet()} ${streakGet()===1?'dia':'dias'}</p>
     <button class="btn" id="jclose">Fechar</button></div>`);
   o.querySelector('#jclose').onclick = () => { SFX.click(); ovl.innerHTML = ''; ui.lock--; ui.keyFn = null; };
   ui.keyFn = e => { if(e.key==='Escape') o.querySelector('#jclose').click(); };
