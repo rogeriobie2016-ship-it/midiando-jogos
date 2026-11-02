@@ -1,0 +1,412 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Quiz de checagem do Midiando: posts, prints e notícias para investigar antes de compartilhar.">
+<meta property="og:title" content="Quiz Midiando">
+<meta property="og:description" content="Quiz de checagem do Midiando: posts, prints e notícias para investigar antes de compartilhar.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#2F4BFF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232F4BFF'/%3E%3Crect x='12' y='34' width='40' height='16' fill='%23E6FF3B'/%3E%3Cpath d='M16 30V14h7l9 11 9-11h7v16h-7v-7l-9 10-9-10v7z' fill='%23fff'/%3E%3C/svg%3E">
+<title>Quiz Midiando</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: coluna única de celular. Capa e cartão final em azul com raios suaves (como os posts do @projetomidiando); jogo em fundo claro, sem ornamento. */
+:root{
+  --blue:#2F4BFF; --blue-2:#3D58FF; --lime:#E6FF3B; --orange:#FF5A1F; --green:#BFFF8A;
+  --ink:#111216; --ink-2:#5A5D6B; --line:#DCDEE6; --paper:#FFFFFF; --bg:#F4F5F0;
+  --f-display:"Anton","Bebas Neue",Impact,"Arial Narrow",sans-serif;
+  --f-body:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:14px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--f-body);font-size:16px;line-height:1.45;color:var(--ink);background:var(--bg);
+  padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px))}
+.stage{max-width:440px;margin:0 auto;padding-block:16px 32px;display:flex;flex-direction:column;gap:14px}
+button{font:inherit;color:inherit;cursor:pointer;border:0;background:none}
+button:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+h1,h2,h3{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;letter-spacing:.005em;line-height:.95;text-wrap:balance}
+p{margin:0}
+.muted{color:var(--ink-2)}
+.small{font-size:13.5px}
+.label{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.lime{background:var(--lime);color:var(--ink);padding:0 .18em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+
+.top{display:flex;justify-content:space-between;align-items:center}
+.brand{font-family:var(--f-display);font-size:18px;letter-spacing:.04em;color:var(--ink);text-decoration:none}
+.brand span{color:var(--blue)}
+.count{font-weight:700;font-size:14px;font-variant-numeric:tabular-nums}
+.prog{height:4px;background:var(--line);border-radius:2px;overflow:hidden}
+.prog i{display:block;height:100%;background:var(--blue);transition:width .3s}
+
+.rays{background:repeating-conic-gradient(from 0deg at 50% 30%,var(--blue) 0 9deg,var(--blue-2) 9deg 18deg);color:#fff;border-radius:var(--r);padding:28px 22px 24px;display:flex;flex-direction:column;gap:16px}
+.rays h1{font-size:clamp(46px,14vw,64px)}
+.rays p{font-size:16.5px;max-width:34ch}
+
+.panel{background:var(--paper);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:14px}
+.steps{list-style:none;margin:0;padding:0;display:flex;flex-direction:column;gap:10px;counter-reset:s}
+.steps li{display:flex;gap:12px;align-items:baseline;counter-increment:s}
+.steps li::before{content:counter(s);font-family:var(--f-display);font-size:22px;color:var(--blue);width:18px;flex:none}
+.keys{display:flex;flex-wrap:wrap;gap:6px}
+.key{font-size:13px;font-weight:700;padding:3px 10px;border-radius:4px}
+.k-confiavel{background:var(--green)}.k-falso{background:var(--orange);color:#fff}.k-contexto{background:var(--blue);color:#fff}
+
+.btn{display:flex;align-items:center;justify-content:center;width:100%;border-radius:999px;padding:14px 18px;font-weight:700;font-size:17px;background:var(--ink);color:#fff;transition:transform .12s}
+.btn:active{transform:scale(.98)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px var(--ink)}
+.btn.limeb{background:var(--lime);color:var(--ink)}
+.row{display:flex;gap:8px}.row .btn{flex:1}
+.note{font-size:12.5px;color:var(--ink-2);text-align:center}
+
+/* posts simulados: neutros, como a tela de um app */
+.post{background:var(--paper);border:1px solid var(--line);border-radius:var(--r);overflow:hidden}
+.phead{display:flex;align-items:center;gap:10px;padding:12px}
+.av{width:34px;height:34px;border-radius:50%;display:grid;place-items:center;font-weight:800;font-size:12px;flex:none;color:var(--ink)}
+.who{min-width:0;line-height:1.25}
+.who b{display:block;font-weight:700;font-size:15px}
+.who span{font-size:12.5px;color:var(--ink-2)}
+.verified{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:var(--blue);color:#fff;font-size:9px;vertical-align:1px;margin-left:4px}
+.ptext{padding:0 12px 12px;font-size:15.5px}
+.pimg{line-height:0;background:#eee}
+.pimg svg{width:100%;height:auto;display:block}
+.pfoot{padding:0 12px 12px;font-size:13px;color:var(--ink-2);display:flex;gap:14px}
+.zap{background:#ECF3E8}
+.zap .bubble{margin:0 12px 12px;background:var(--paper);border-radius:4px 12px 12px 12px;padding:8px 11px 6px;box-shadow:0 1px 0 rgba(0,0,0,.06)}
+.zap .fwd{display:block;font-size:12px;color:var(--ink-2);font-style:italic;margin-bottom:3px}
+.zap .time{display:block;text-align:right;font-size:11px;color:var(--ink-2)}
+.site .domain{padding:9px 12px;border-bottom:1px solid var(--line);font-size:13px;color:var(--ink-2)}
+.site .domain b{color:var(--ink);font-weight:700}
+.site .shared{padding:10px 12px 0;font-size:12.5px;color:var(--ink-2)}
+.site h3{font-family:var(--f-body);text-transform:none;font-weight:800;font-size:20px;line-height:1.2;padding:10px 12px 4px;letter-spacing:-.01em}
+.site .date{padding:0 12px;font-size:13px;color:var(--ink-2)}
+.site .lede{padding:8px 12px 14px;font-size:15px}
+.quote{background:var(--ink);color:#fff;padding:26px 20px;font-family:var(--f-display);text-transform:uppercase;font-size:28px;line-height:1}
+.quote small{display:block;font-family:var(--f-body);text-transform:none;font-weight:600;font-size:14px;margin-top:12px;color:var(--lime)}
+
+/* investigação */
+.seg{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.pista{border-radius:10px;padding:10px 4px;display:flex;flex-direction:column;align-items:center;gap:4px;font-weight:600;font-size:13.5px;line-height:1.15;text-align:center;box-shadow:inset 0 0 0 1.5px var(--line);background:var(--paper)}
+.pista svg{width:22px;height:22px}
+.pista.on{background:var(--ink);color:#fff;box-shadow:none}
+.pista[disabled]:not(.on){opacity:.35;cursor:not-allowed}
+.pista.key{box-shadow:inset 0 0 0 2px var(--blue)}
+.reveal{background:var(--lime);border-radius:6px;padding:12px 14px;font-size:15px}
+.reveal .label{color:var(--ink);display:block;margin-bottom:3px}
+
+.verdicts{display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.vbtn{border-radius:10px;padding:14px 4px;font-weight:700;font-size:15px;line-height:1.1;transition:opacity .2s}
+.vbtn[data-v="confiavel"]{background:var(--green)}
+.vbtn[data-v="falso"]{background:var(--orange);color:#fff}
+.vbtn[data-v="contexto"]{background:var(--blue);color:#fff}
+.vbtn[disabled]{opacity:.25;cursor:default}
+.vbtn.picked{opacity:1}
+
+.feedback{background:var(--paper);border-radius:var(--r);padding:18px;display:flex;flex-direction:column;gap:12px;animation:up .3s ease-out}
+.feedback h2{font-size:34px}
+.feedback .ok{color:var(--blue)}.feedback .no{color:var(--orange)}
+.feedback dl{margin:0;display:flex;flex-direction:column;gap:10px}
+.feedback dd{margin:2px 0 0}
+@keyframes up{from{transform:translateY(8px);opacity:.5}to{transform:none;opacity:1}}
+
+/* resultado */
+.card{aspect-ratio:4/5;max-width:100%;border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;justify-content:space-between;padding:24px 22px;color:#fff;background:repeating-conic-gradient(from 0deg at 50% 50%,var(--blue) 0 9deg,var(--blue-2) 9deg 18deg)}
+.card .k{font-family:var(--f-display);font-size:16px;letter-spacing:.06em}
+.card h2{font-size:clamp(40px,12vw,56px)}
+.card .perfil{display:inline;font-family:var(--f-display);text-transform:uppercase;font-size:clamp(34px,10vw,46px);line-height:1.12}
+.card .stats{display:flex;gap:18px;font-variant-numeric:tabular-nums}
+.card .stats b{display:block;font-family:var(--f-display);font-size:34px;font-weight:400;line-height:1}
+.card .stats span{font-size:12.5px;font-weight:600;opacity:.9}
+.card .foot{display:flex;justify-content:space-between;font-size:13px;font-weight:600}
+.review{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.review li{display:flex;gap:10px;align-items:baseline;font-size:14px;padding:9px 0;border-top:1px solid var(--line)}
+.review .m{flex:none;font-weight:800;width:16px}
+.review .m.ok{color:var(--blue)}.review .m.no{color:var(--orange)}
+.toast{position:fixed;left:50%;bottom:calc(20px + env(safe-area-inset-bottom,0px));transform:translateX(-50%);background:var(--ink);color:#fff;padding:10px 18px;border-radius:999px;font-weight:600;font-size:14px;z-index:20;max-width:calc(100% - 32px)}
+</style>
+
+<div class="stage" id="app"></div>
+
+<script>
+const ICON = {
+  quem:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="12" cy="8" r="4"/><path d="M4 21c1.5-4 4.5-6 8-6s6.5 2 8 6"/></svg>',
+  quando:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><rect x="3" y="5" width="18" height="16" rx="3"/><path d="M3 10h18M8 3v4M16 3v4"/></svg>',
+  origem:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><circle cx="10.5" cy="10.5" r="6.5"/><path d="M15.5 15.5 21 21"/></svg>'
+};
+const PISTA_LABEL = {quem:'Quem postou?', quando:'Quando?', origem:'De onde veio?'};
+const VLABEL = {confiavel:'Confiável', falso:'Falso', contexto:'Fora de contexto'};
+
+const IMG = {
+  enchente:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#a9b9c2"/><rect x="18" y="52" width="70" height="78" fill="#F4F5F0"/><path d="M12 56 53 24 94 56Z" fill="#c7cdd6"/><rect x="40" y="70" width="20" height="18" fill="#7f95a3"/><rect x="120" y="40" width="88" height="90" fill="#e3d7c3"/><rect x="134" y="56" width="20" height="18" fill="#7f95a3"/><rect x="172" y="56" width="20" height="18" fill="#7f95a3"/><rect x="236" y="62" width="66" height="68" fill="#d2c6d9"/><rect x="258" y="78" width="20" height="18" fill="#7f95a3"/><path d="M0 112q20-10 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0V180H0Z" fill="#6f8577"/><path d="M20 140q15-6 30 0M120 152q15-6 30 0M220 138q15-6 30 0" stroke="#4e6155" stroke-width="2" fill="none"/></svg>`,
+  cha:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#BFFF8A"/><path d="M110 70h90v52a30 30 0 0 1-30 30h-30a30 30 0 0 1-30-30Z" fill="#fff"/><path d="M200 84h12a16 16 0 0 1 0 32h-14" fill="none" stroke="#fff" stroke-width="6"/><path d="M114 84h82" stroke="#9c7b3a" stroke-width="10"/><path d="M135 58q-8-12 0-24M158 58q-8-12 0-24M181 58q-8-12 0-24" fill="none" stroke="#111216" stroke-width="2.5" stroke-linecap="round" opacity=".5"/><circle cx="262" cy="128" r="26" fill="#E6FF3B"/><path d="M262 104v48M238 128h48" stroke="#b8cc2a" stroke-width="2"/><text x="16" y="168" font-family="Anton,Impact,sans-serif" font-size="24" fill="#111216">CURA EM 24H?!</text></svg>`,
+  grafico:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#F4F5F0"/><text x="18" y="40" font-family="Anton,Impact,sans-serif" font-size="28" fill="#111216">90% NÃO VÃO VOTAR</text><rect x="40" y="58" width="80" height="104" fill="#FF5A1F"/><rect x="170" y="148" width="80" height="14" fill="#2F4BFF"/><path d="M24 162h272" stroke="#111216" stroke-width="2"/></svg>`
+};
+
+/* Posts fictícios. Pessoas, perfis e páginas são inventados para o jogo. */
+const Q = [
+  {tipo:'zap', autor:'Tia Neide', ini:'TN', cor:'#FFD2BF', meta:'Encaminhada com frequência',
+   texto:'⚠️ URGENTE ⚠️ A partir de segunda-feira quem não fez a biometria vai ter o CPF BLOQUEADO!!! O governo não está avisando na TV. Repassa pra todo mundo antes que apaguem essa mensagem!!',
+   pistas:{quem:'Sua tia recebeu num grupo e repassou. Ela não sabe quem escreveu primeiro. O aviso "Encaminhada com frequência" mostra que a mensagem já passou por muitas conversas.',
+           quando:'Não tem data. "A partir de segunda" pode ser qualquer segunda, de qualquer ano.',
+           origem:'Nenhum link, nenhum órgão citado. O site do TSE não tem esse aviso, e o CPF é da Receita Federal, não da Justiça Eleitoral.'},
+   chave:'origem', resposta:'falso',
+   sinal:'Urgência, nenhuma fonte e pedido para repassar. "Antes que apaguem" é um gatilho clássico para você compartilhar sem pensar.',
+   dica:'Procure o assunto no site oficial (tse.jus.br) ou numa agência de checagem antes de repassar.'},
+
+  {tipo:'insta', autor:'noticiasdobairro.agora', ini:'NB', cor:'#CFE3FF', meta:'Perfil criado há 3 semanas · 214 seguidores', img:'enchente',
+   texto:'Olha como ficou a avenida AGORA depois da chuva de ontem à noite 😱 A prefeitura abandonou a gente!',
+   pistas:{quem:'Perfil novo, sem nome de responsável e com poucas publicações. Isso sozinho não prova mentira, mas pede cuidado.',
+           quando:'Postado hoje às 7h12. A legenda diz "agora", mas a foto pode ser de qualquer época.',
+           origem:'A busca reversa de imagem mostra a mesma foto publicada em 2019, em outra cidade, numa enchente diferente.'},
+   chave:'origem', resposta:'contexto',
+   sinal:'A foto é real, mas é de outro lugar e de outro ano. O fato existiu; a história contada agora é outra.',
+   dica:'Use a busca reversa de imagem (Google Lens ou TinEye) para ver onde a foto apareceu pela primeira vez.'},
+
+  {tipo:'site', dominio:'tse.jus.br', veiculo:'Tribunal Superior Eleitoral', data:'Notícias · ano de eleição',
+   titulo:'Cadastro eleitoral fecha 150 dias antes da eleição',
+   texto:'Quem quer tirar o primeiro título, transferir ou atualizar dados precisa resolver tudo até 150 dias antes do dia da votação. O pedido pode começar pelo Autoatendimento Eleitoral, na internet.',
+   pistas:{quem:'Site oficial do Tribunal Superior Eleitoral. Endereços terminados em .jus.br são de órgãos do Judiciário.',
+           quando:'Publicado em ano de eleição. A regra dos 150 dias está na Lei das Eleições (Lei 9.504/1997).',
+           origem:'A mesma informação aparece nos sites dos Tribunais Regionais Eleitorais, como o TRE-CE.'},
+   chave:'quem', resposta:'confiavel',
+   sinal:'Fonte oficial, informação que dá pra conferir em outros lugares e nenhum apelo emocional. Esse pode ser compartilhado.',
+   dica:'Mesmo com fonte boa, confira o endereço do site letra por letra: golpistas copiam páginas oficiais.'},
+
+  {tipo:'tweet', autor:'Jornal do Povo', handle:'@JornaIdoPovo', ini:'JP', cor:'#E8CCFF', meta:'Conta criada em setembro',
+   texto:'URGENTE: universidades federais vão cobrar mensalidade a partir do ano que vem. Decisão saiu hoje no Diário Oficial.',
+   pistas:{quem:'O @ usa um "I" maiúsculo no lugar do "l". O perfil verdadeiro do jornal é outro e não publicou nada parecido.',
+           quando:'A conta foi criada no mês passado e tem só 12 posts, todos "urgentes".',
+           origem:'Cita o Diário Oficial, mas sem link nem número do ato. E a Constituição (art. 206) garante ensino gratuito nas instituições públicas.'},
+   chave:'quem', resposta:'falso',
+   sinal:'Perfil impostor. Copiar nome e foto de um veículo conhecido é um jeito rápido de ganhar a sua confiança.',
+   dica:'Abra o perfil: confira o @, a data de criação e se o veículo publicou a mesma notícia no próprio site.'},
+
+  {tipo:'insta', autor:'dr.natural.saude', ini:'DR', cor:'#BFFF8A', meta:'Link na bio: loja de chás', img:'cha',
+   texto:'Médico REVELA: chá de boldo com limão cura a dengue em 24 horas. Os laboratórios não querem que você saiba! 🍋🌿',
+   pistas:{quem:'O perfil não informa nome completo nem registro no conselho de medicina (CRM). O link da bio vende o chá do vídeo.',
+           quando:'O mesmo vídeo volta a circular a cada surto de dengue.',
+           origem:'Nenhum estudo citado. Não existe remédio caseiro que cure a dengue: o tratamento é hidratação e acompanhamento no posto de saúde.'},
+   chave:'quem', resposta:'falso',
+   sinal:'Apelo emocional ("não querem que você saiba"), promessa milagrosa e alguém lucrando com a venda.',
+   dica:'Desconfie de cura rápida. Procure o nome e o CRM do profissional e veja o que dizem as fontes de saúde pública.'},
+
+  {tipo:'site', dominio:'portalcidade.com.br', veiculo:'Portal Cidade', data:'Publicado em 12/03/2015', compartilhado:'Davi compartilhou hoje no grupo da turma',
+   titulo:'Prefeitura anuncia meia passagem para estudantes também nos fins de semana',
+   texto:'A medida vale a partir do próximo mês e foi aprovada pela Câmara Municipal na última terça-feira.',
+   pistas:{quem:'Portal de notícias local, que assina as matérias e tem endereço e expediente no site.',
+           quando:'A matéria é de março de 2015. O Davi compartilhou hoje como se fosse novidade. A regra pode ter mudado várias vezes desde então.',
+           origem:'O texto cita uma lei municipal daquele ano, mas não dá pra saber pela matéria se ela continua valendo.'},
+   chave:'quando', resposta:'contexto',
+   sinal:'Notícia velha compartilhada como nova. Era verdade em 2015; hoje, pode não ser.',
+   dica:'Olhe a data antes do título. Depois confira no site da prefeitura se a regra ainda vale.'},
+
+  {tipo:'insta', autor:'brasil.acorda.ja', ini:'BA', cor:'#FFD2BF', meta:'Página · 30 posts por dia', img:'grafico',
+   texto:'PESQUISA: 9 em cada 10 jovens NÃO vão votar na próxima eleição. A juventude desistiu do Brasil!',
+   pistas:{quem:'Página de opinião, sem jornalistas ou responsáveis identificados.',
+           quando:'Postado ontem, sem dizer quando a "pesquisa" foi feita.',
+           origem:'Não diz qual instituto fez a pesquisa, quantas pessoas foram ouvidas nem onde. O gráfico não tem números no eixo.'},
+   chave:'origem', resposta:'falso',
+   sinal:'Pesquisa sem instituto, sem amostra e sem data não é pesquisa. Gráfico sem escala serve só para impressionar.',
+   dica:'Pesquisa séria informa instituto, número de entrevistados, margem de erro e data. Pesquisas eleitorais precisam ser registradas na Justiça Eleitoral.'},
+
+  {tipo:'insta', autor:'justica.eleitoral.oficial', verificado:true, ini:'JE', cor:'#E6FF3B', meta:'Perfil verificado · desde 2014',
+   texto:'⚠️ ALERTA DE GOLPE: a Justiça Eleitoral não envia SMS nem WhatsApp com link para "regularizar" o título. Tirar o título é gratuito, e nenhum serviço é cobrado por mensagem.',
+   pistas:{quem:'Perfil verificado, ativo há anos, com link para um site .jus.br na bio.',
+           quando:'Publicado nesta semana, perto do fim do prazo do cadastro, época em que esse golpe mais aparece.',
+           origem:'O mesmo alerta está no site do TSE, na área de serviços ao eleitor.'},
+   chave:'quem', resposta:'confiavel',
+   sinal:'Fonte oficial, que não pede nada de você, e a informação confere com outros canais oficiais.',
+   dica:'Órgão público não cobra por mensagem. Na dúvida, digite você mesmo o endereço do site em vez de clicar em links.'},
+
+  {tipo:'quote', autor:'Política Sem Filtro', ini:'PF', cor:'#E8CCFF', meta:'Página · sem responsável identificado',
+   frase:'"Estudante não precisa de ônibus. Que vá a pé!"', fala:'Vereador Juca Batista',
+   texto:'Compartilhe se você também está revoltado!! 😡😡',
+   pistas:{quem:'Página anônima que só publica cards contra um mesmo grupo político.',
+           quando:'Sem data e sem dizer onde a frase teria sido dita.',
+           origem:'Nenhum jornal, vídeo ou ata da Câmara registra essa fala. Só existe o card.'},
+   chave:'origem', resposta:'falso',
+   sinal:'Frase forte, sem vídeo, sem data e sem lugar. Quando ninguém mais registrou uma frase polêmica, ela provavelmente foi inventada.',
+   dica:'Busque a frase entre aspas. Veja se algum veículo ou as atas da Câmara registram a fala.'}
+];
+
+const PERFIS = {
+  detetive:{nome:'Detetive de respeito', txt:'Você investiga antes de opinar e não cai em manchete apressada.'},
+  aprendiz:{nome:'Aprendiz de checagem', txt:'Você já sabe onde procurar. Falta treinar o olho para datas, @ parecidos e fotos recicladas.'},
+  desconfiado:{nome:'Desconfiança no máximo', txt:'Você desconfiou até do que era verdade. Checar serve para separar, não para descartar tudo.'},
+  apressado:{nome:'Compartilhador apressado', txt:'Você respondeu rápido e investigou pouco. Uma pista leva 10 segundos.'}
+};
+
+const st = {tela:'inicio', i:0, ordem:[], pista:null, resp:null, hist:[], t0:0, t1:0};
+const app = document.getElementById('app');
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+
+function renderPost(q){
+  const head = `<div class="phead"><div class="av" style="background:${q.cor}">${q.ini}</div><div class="who"><b>${esc(q.autor)}${q.verificado?'<span class="verified" aria-label="verificado">✓</span>':''}</b><span>${esc(q.handle?q.handle+' · ':'')}${esc(q.meta)}</span></div></div>`;
+  if(q.tipo==='zap') return `<article class="post zap">${head}<div class="bubble"><span class="fwd">↪↪ ${esc(q.meta)}</span><p>${esc(q.texto)}</p><span class="time">07:42 ✓✓</span></div></article>`;
+  if(q.tipo==='site') return `<article class="post site"><div class="domain">🔒 <b>${esc(q.dominio)}</b></div>${q.compartilhado?`<div class="shared">↪ ${esc(q.compartilhado)}</div>`:''}<h3>${esc(q.titulo)}</h3><div class="date">${esc(q.veiculo)} · ${esc(q.data)}</div><p class="lede">${esc(q.texto)}</p></article>`;
+  if(q.tipo==='quote') return `<article class="post">${head}<div class="quote">${esc(q.frase)}<small>${esc(q.fala)}</small></div><p class="ptext" style="padding-top:12px">${esc(q.texto)}</p></article>`;
+  if(q.tipo==='tweet') return `<article class="post">${head}<p class="ptext">${esc(q.texto)}</p><div class="pfoot"><span>↻ 4,1 mil</span><span>♥ 9,8 mil</span></div></article>`;
+  return `<article class="post">${head}${q.img?`<div class="pimg">${IMG[q.img]}</div>`:''}<p class="ptext" style="padding-top:12px"><b>${esc(q.autor)}</b> ${esc(q.texto)}</p></article>`;
+}
+
+function inicio(){
+  app.innerHTML = `
+  <div class="top"><a class="brand" href="../">MIDIANDO <span>· QUIZ</span></a><span class="count">9 posts · 4 min</span></div>
+  <section class="rays">
+    <span class="label" style="color:#fff;opacity:.85">Quiz Midiando</span>
+    <h1>Antes de compartilhar, <span class="lime">investigue.</span></h1>
+    <p>Posts, prints e notícias que circulam por aí. Em cada um, abra uma pista e dê o seu veredito.</p>
+  </section>
+  <section class="panel">
+    <ol class="steps">
+      <li><span>Leia o post com calma.</span></li>
+      <li><span>Abra <b>uma</b> pista: quem postou, quando ou de onde veio.</span></li>
+      <li><span>Decida se é confiável, falso ou fora de contexto.</span></li>
+    </ol>
+    <div class="keys"><span class="key k-confiavel">Confiável</span><span class="key k-falso">Falso</span><span class="key k-contexto">Fora de contexto</span></div>
+    <button class="btn" id="go">Começar</button>
+    <p class="note">Protótipo. Posts, perfis e pessoas são fictícios, criados para treinar checagem.</p>
+  </section>`;
+  document.getElementById('go').onclick = comecar;
+}
+
+function comecar(){
+  st.ordem = Q.map((_,k)=>k).sort(()=>Math.random()-.5);
+  st.i=0; st.hist=[]; st.pista=null; st.resp=null; st.t0=Date.now(); st.tela='jogo';
+  render();
+}
+
+function jogo(){
+  const q = Q[st.ordem[st.i]];
+  const pts = st.hist.reduce((s,h)=>s+h.pts,0);
+  const respondeu = !!st.resp;
+  const pistasHtml = ['quem','quando','origem'].map(p=>{
+    const on = st.pista===p;
+    const dis = (st.pista && !on) || respondeu;
+    const key = respondeu && q.chave===p && !on;
+    return `<button class="pista ${on?'on':''} ${key?'key':''}" data-p="${p}" ${dis||on?'disabled':''} aria-pressed="${on}">${ICON[p]}${PISTA_LABEL[p]}</button>`;
+  }).join('');
+  let reveal = '';
+  if(st.pista) reveal = `<div class="reveal"><span class="label">${PISTA_LABEL[st.pista]}</span>${esc(q.pistas[st.pista])}</div>`;
+  const verd = Object.keys(VLABEL).map(v=>`<button class="vbtn ${st.resp===v?'picked':''}" data-v="${v}" ${respondeu?'disabled':''}>${VLABEL[v]}</button>`).join('');
+
+  let fb = '';
+  if(respondeu){
+    const h = st.hist[st.hist.length-1];
+    fb = `<section class="feedback" aria-live="polite">
+      <h2 class="${h.ok?'ok':'no'}">${h.ok?'Acertou':'Não foi dessa vez'}</h2>
+      <p>Este post é <b>${VLABEL[q.resposta].toLowerCase()}</b>. <span class="muted">+${h.pts} pts</span></p>
+      <dl>
+        <div><dt class="label">O sinal</dt><dd>${esc(q.sinal)}</dd></div>
+        <div><dt class="label">A pista que entregava</dt><dd>${PISTA_LABEL[q.chave]}${st.pista===q.chave?' Foi a que você abriu.':` <span class="muted small">${esc(q.pistas[q.chave])}</span>`}</dd></div>
+        <div><dt class="label">Como checar</dt><dd>${esc(q.dica)}</dd></div>
+      </dl>
+      <button class="btn" id="next">${st.i<Q.length-1?'Próximo post':'Ver meu perfil'}</button>
+    </section>`;
+  }
+
+  app.innerHTML = `
+  <div class="top"><a class="brand" href="../">MIDIANDO <span>· QUIZ</span></a><span class="count">${st.i+1}/${Q.length} · ${pts} pts</span></div>
+  <div class="prog" aria-hidden="true"><i style="width:${(st.i+(respondeu?1:0))/Q.length*100}%"></i></div>
+  ${renderPost(q)}
+  <section class="panel">
+    <span class="label">Investigue (1 pista)</span>
+    <div class="seg">${pistasHtml}</div>
+    ${reveal}
+    <span class="label">Seu veredito</span>
+    <div class="verdicts">${verd}</div>
+  </section>
+  ${fb}`;
+
+  app.querySelectorAll('.pista').forEach(b=>b.onclick=()=>{ if(!st.pista && !st.resp){ st.pista=b.dataset.p; render(); }});
+  app.querySelectorAll('.vbtn').forEach(b=>b.onclick=()=>responder(b.dataset.v));
+  const nx = document.getElementById('next');
+  if(nx) nx.onclick = proximo;
+  if(nx && st.scroll){ st.scroll=false; document.querySelector('.feedback').scrollIntoView({behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'auto':'smooth', block:'start'}); }
+}
+
+function responder(v){
+  if(st.resp) return;
+  const q = Q[st.ordem[st.i]];
+  const ok = v===q.resposta;
+  const pts = (ok?100:0) + (st.pista?10:0) + (st.pista===q.chave?40:0);
+  st.resp = v; st.scroll = true;
+  st.hist.push({q:st.ordem[st.i], v, ok, pista:st.pista, pistaCerta:st.pista===q.chave, pts});
+  render();
+}
+
+function proximo(){
+  if(st.i<Q.length-1){ st.i++; st.pista=null; st.resp=null; }
+  else { st.t1=Date.now(); st.tela='fim'; }
+  render(); window.scrollTo(0,0);
+}
+
+function perfil(){
+  const ac = st.hist.filter(h=>h.ok).length;
+  const usadas = st.hist.filter(h=>h.pista).length;
+  const verdadeirasErradas = st.hist.filter(h=>Q[h.q].resposta==='confiavel' && !h.ok).length;
+  if(usadas<=3) return 'apressado';
+  if(ac>=8) return 'detetive';
+  if(verdadeirasErradas>=2) return 'desconfiado';
+  if(ac<=4 && usadas<=5) return 'apressado';
+  return 'aprendiz';
+}
+
+function fim(){
+  const ac = st.hist.filter(h=>h.ok).length;
+  const usadas = st.hist.filter(h=>h.pista).length;
+  const certas = st.hist.filter(h=>h.pistaCerta).length;
+  const pts = st.hist.reduce((s,h)=>s+h.pts,0);
+  const seg = Math.max(1,Math.round((st.t1-st.t0)/1000));
+  const tempo = `${Math.floor(seg/60)}min${String(seg%60).padStart(2,'0')}s`;
+  const p = PERFIS[perfil()];
+  const review = st.hist.map(h=>{
+    const q=Q[h.q]; const t=q.titulo||q.frase||q.texto;
+    return `<li><span class="m ${h.ok?'ok':'no'}">${h.ok?'✓':'✕'}</span><span style="min-width:0">${esc(t.length>70?t.slice(0,68)+'…':t)} <span class="muted small">· ${VLABEL[q.resposta]}</span></span></li>`;
+  }).join('');
+  app.innerHTML = `
+  <div class="top"><a class="brand" href="../">MIDIANDO <span>· QUIZ</span></a><span class="count">Resultado</span></div>
+  <div class="card">
+    <span class="k">QUIZ MIDIANDO</span>
+    <div>
+      <h2>No quiz, eu sou</h2>
+      <span class="perfil lime">${p.nome}</span>
+    </div>
+    <div class="stats">
+      <div><b>${ac}/${Q.length}</b><span>acertos</span></div>
+      <div><b>${usadas}</b><span>pistas</span></div>
+      <div><b>${pts}</b><span>pontos</span></div>
+    </div>
+    <div class="foot"><span>@projetomidiando</span><span>Antes de compartilhar, investigue</span></div>
+  </div>
+  <p class="note">Tire um print do cartão para postar nos stories.</p>
+  <div class="row"><button class="btn limeb" id="copy">Copiar legenda</button><button class="btn ghost" id="again">Jogar de novo</button></div>
+  <section class="panel">
+    <p>${p.txt}</p>
+    <p class="small muted">${certas} de ${Q.length} vezes você abriu justamente a pista que entregava o sinal. Tempo: ${tempo}.</p>
+    <ul class="review">${review}</ul>
+  </section>`;
+  document.getElementById('again').onclick = ()=>{ st.tela='inicio'; render(); window.scrollTo(0,0); };
+  document.getElementById('copy').onclick = async ()=>{
+    const txt = `No Quiz Midiando eu sou "${p.nome}": ${ac}/${Q.length} acertos. Antes de compartilhar, investigue! @projetomidiando`;
+    try{ await navigator.clipboard.writeText(txt); toast('Legenda copiada'); }
+    catch(e){ toast(txt); }
+  };
+}
+
+function toast(msg){
+  const t=document.createElement('div'); t.className='toast'; t.textContent=msg; document.body.appendChild(t);
+  setTimeout(()=>t.remove(), 2600);
+}
+
+function render(){ ({inicio, jogo, fim})[st.tela](); }
+
+function boot(data){ if(data && data.st) Object.assign(st, data.st); render(); }
+window.claude?.hot?.snapshot?.(()=>({st}));
+window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+</script>

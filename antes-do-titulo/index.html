@@ -1,0 +1,1125 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<meta name="description" content="Aventura 3D do Midiando sobre o primeiro título de eleitor: crie seu personagem, explore o bairro e descubra o peso da sua voz.">
+<meta property="og:title" content="Antes do Título">
+<meta property="og:description" content="Aventura 3D do Midiando sobre o primeiro título de eleitor: crie seu personagem, explore o bairro e descubra o peso da sua voz.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#2F4BFF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232F4BFF'/%3E%3Crect x='12' y='34' width='40' height='16' fill='%23E6FF3B'/%3E%3Cpath d='M16 30V14h7l9 11 9-11h7v16h-7v-7l-9 10-9-10v7z' fill='%23fff'/%3E%3C/svg%3E">
+<title>Antes do Título</title>
+<meta name="claude:viewport-fit-sides" content="cover">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: mundo 3D em tela cheia; HUD discreto no topo, diálogo em cartão branco embaixo, telas de capítulo em azul Midiando. */
+:root{
+  --blue:#2F4BFF; --blue-2:#3D58FF; --lime:#E6FF3B; --orange:#FF5A1F; --green:#BFFF8A; --pink:#FF7AD9; --lilac:#E8CCFF;
+  --ink:#111216; --ink-2:#5A5D6B; --line:#DCDEE6; --paper:#FFFFFF; --soft:#F2F3F7; --sky:#CFE6FF;
+  --f-display:"Anton","Bebas Neue",Impact,"Arial Narrow",sans-serif;
+  --f-body:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+[hidden]{display:none!important}
+html,body{height:100%;margin:0;overflow:hidden;background:var(--sky);color:var(--ink);font-family:var(--f-body);-webkit-tap-highlight-color:transparent;user-select:none;-webkit-user-select:none}
+#c{position:fixed;inset:0;width:100%;height:100%;display:block;touch-action:none}
+button,input{font:inherit;color:inherit}
+button{cursor:pointer;border:0;background:none}
+button:focus-visible,input:focus-visible{outline:3px solid var(--blue);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+h1,h2,h3{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;line-height:.95;letter-spacing:.005em;text-wrap:balance}
+p{margin:0}
+.lime{background:var(--lime);color:var(--ink);padding:0 .16em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+.note{font-size:12.5px;color:var(--ink-2)}
+.btn{display:flex;align-items:center;justify-content:center;width:100%;border-radius:999px;padding:14px 18px;font-weight:700;font-size:17px;background:var(--ink);color:#fff;transition:transform .12s}
+.btn:active{transform:scale(.98)}
+.btn.blue{background:var(--blue)}
+.btn.limeb{background:var(--lime);color:var(--ink)}
+.btn.ghost{background:transparent;color:var(--ink);box-shadow:inset 0 0 0 1.5px currentColor}
+.row{display:flex;gap:8px}.row .btn{flex:1}
+
+/* HUD */
+.hud{position:fixed;z-index:5;top:calc(12px + env(safe-area-inset-top,0px));left:max(12px,env(safe-area-inset-left,0px));right:max(12px,env(safe-area-inset-right,0px));display:flex;justify-content:space-between;align-items:flex-start;gap:10px;pointer-events:none}
+.obj{background:rgba(255,255,255,.95);border-radius:12px;padding:9px 12px 10px;max-width:min(72vw,380px);box-shadow:0 4px 18px rgba(17,18,22,.12)}
+.obj .cap{font-family:var(--f-display);font-size:13px;letter-spacing:.07em;color:var(--blue);text-transform:uppercase}
+.obj .txt{font-weight:700;font-size:15px;line-height:1.25;margin-top:1px}
+.voz{display:flex;align-items:center;gap:8px;margin-top:7px;font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink-2)}
+.voz b{flex:1;height:5px;background:var(--line);border-radius:3px;overflow:hidden;display:block}
+.voz i{display:block;height:100%;width:0;background:var(--blue);transition:width .8s ease}
+.tools{display:flex;gap:6px;pointer-events:auto}
+.icon{width:42px;height:42px;border-radius:50%;background:rgba(255,255,255,.95);display:grid;place-items:center;box-shadow:0 4px 18px rgba(17,18,22,.12)}
+.icon svg{width:20px;height:20px}
+.toast{position:fixed;z-index:9;left:50%;top:calc(96px + env(safe-area-inset-top,0px));transform:translateX(-50%);background:var(--ink);color:#fff;border-radius:999px;padding:9px 16px;font-weight:700;font-size:14px;white-space:nowrap;animation:tin .25s ease-out}
+.toast b{color:var(--lime)}
+@keyframes tin{from{opacity:0;transform:translate(-50%,-6px)}to{opacity:1;transform:translate(-50%,0)}}
+.hint{position:fixed;z-index:4;right:max(16px,env(safe-area-inset-right,0px));bottom:calc(16px + env(safe-area-inset-bottom,0px));font-size:12.5px;font-weight:600;color:var(--ink);background:rgba(255,255,255,.85);border-radius:999px;padding:6px 12px}
+
+/* joystick */
+#joy{position:fixed;z-index:5;left:calc(22px + env(safe-area-inset-left,0px));bottom:calc(26px + env(safe-area-inset-bottom,0px));width:124px;height:124px;border-radius:50%;background:rgba(255,255,255,.28);box-shadow:inset 0 0 0 2px rgba(255,255,255,.85);touch-action:none}
+#knob{position:absolute;left:50%;top:50%;width:54px;height:54px;margin:-27px 0 0 -27px;border-radius:50%;background:#fff;box-shadow:0 4px 14px rgba(17,18,22,.2)}
+
+/* diálogo */
+.dlg{position:fixed;z-index:8;left:50%;transform:translateX(-50%);bottom:calc(16px + env(safe-area-inset-bottom,0px));width:min(560px,calc(100% - 24px));background:#fff;border-radius:16px;padding:20px 18px 14px;box-shadow:0 12px 40px rgba(17,18,22,.28);cursor:pointer;animation:din .2s ease-out}
+@keyframes din{from{opacity:0;transform:translate(-50%,10px)}to{opacity:1;transform:translate(-50%,0)}}
+.dlg .name{position:absolute;top:-13px;left:16px;background:var(--lime);font-family:var(--f-display);letter-spacing:.05em;font-size:16px;padding:2px 10px;text-transform:uppercase}
+.dlg .text{font-size:17px;line-height:1.45;min-height:2.9em}
+.dlg .text.narr{color:var(--ink-2);font-style:italic}
+.dlg .more{display:block;text-align:right;font-size:12px;font-weight:700;color:var(--blue);letter-spacing:.06em;text-transform:uppercase;margin-top:6px;animation:blink 1.2s infinite}
+@keyframes blink{50%{opacity:.35}}
+.choices{display:flex;flex-direction:column;gap:7px;margin-top:12px;cursor:default}
+.choice{display:flex;gap:12px;align-items:baseline;text-align:left;width:100%;padding:12px 14px;border-radius:12px;background:var(--soft);font-weight:600;font-size:16px;line-height:1.3;transition:background .15s}
+.choice:hover,.choice:focus-visible{background:var(--lime)}
+.choice .n{font-family:var(--f-display);color:var(--blue);font-size:17px;flex:none}
+
+/* sobreposições */
+.ovl{position:fixed;inset:0;z-index:10;display:flex;justify-content:center}
+.ovl.title{align-items:flex-end;background:linear-gradient(to top,rgba(17,18,22,.9) 0%,rgba(17,18,22,.72) 42%,rgba(17,18,22,0) 78%)}
+.titlebox{width:min(560px,100%);padding:24px max(20px,env(safe-area-inset-left,0px)) calc(28px + env(safe-area-inset-bottom,0px));color:#fff;display:flex;flex-direction:column;gap:16px}
+.titlebox .kick{font-family:var(--f-display);letter-spacing:.12em;font-size:15px;color:var(--lime)}
+.titlebox h1{font-size:clamp(64px,19vw,104px);line-height:.98}
+.titlebox h1 .lime{display:inline-block;line-height:1.02;padding:0 .12em;margin-top:.06em}
+.titlebox p{font-size:16.5px;max-width:38ch;opacity:.92}
+.titlebox .note{color:#fff;opacity:.75}
+.ovl.sheet{align-items:flex-end;pointer-events:none}
+.sheetbox{pointer-events:auto;width:min(560px,100%);max-height:58%;overflow:auto;background:#fff;border-radius:20px 20px 0 0;padding:20px max(18px,env(safe-area-inset-left,0px)) calc(18px + env(safe-area-inset-bottom,0px));display:flex;flex-direction:column;gap:14px;box-shadow:0 -10px 40px rgba(17,18,22,.2);user-select:auto}
+.sheetbox h2{font-size:30px}
+.field{display:flex;flex-direction:column;gap:6px}
+.field label,.opt .lab{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink-2)}
+.field input{border:0;border-radius:12px;padding:12px 14px;font-size:18px;font-weight:700;background:var(--soft)}
+.opt{display:flex;flex-direction:column;gap:7px}
+.sw{display:flex;flex-wrap:wrap;gap:8px}
+.sw button{width:36px;height:36px;border-radius:50%;box-shadow:inset 0 0 0 1px rgba(17,18,22,.15)}
+.sw button[aria-pressed="true"]{box-shadow:0 0 0 2px #fff,0 0 0 4px var(--ink)}
+.tx{display:flex;flex-wrap:wrap;gap:6px}
+.tx button{padding:7px 12px;border-radius:999px;background:var(--soft);font-weight:600;font-size:14px}
+.tx button[aria-pressed="true"]{background:var(--ink);color:#fff}
+.ovl.center{align-items:center;background:rgba(17,18,22,.5);padding:16px}
+.card{width:min(460px,100%);max-height:100%;overflow:auto;background:#fff;border-radius:18px;padding:22px 20px 18px;display:flex;flex-direction:column;gap:14px;animation:din2 .25s ease-out;user-select:auto}
+@keyframes din2{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+.card .k{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--blue)}
+.card h2{font-size:34px}
+.card p{font-size:16px;line-height:1.5}
+.list{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.list li{padding:10px 0;border-top:1px solid var(--line);font-size:15px;line-height:1.4}
+.list li:first-child{border-top:0}
+.list b{font-weight:700}
+.ovl.chapter{align-items:center;background:repeating-conic-gradient(from 0deg at 50% 50%,var(--blue) 0 9deg,var(--blue-2) 9deg 18deg);color:#fff;cursor:pointer;animation:fadein .35s ease-out}
+@keyframes fadein{from{opacity:0}to{opacity:1}}
+.chap{display:flex;flex-direction:column;align-items:center;gap:14px;text-align:center;padding:24px}
+.chap .n{background:var(--lime);color:var(--ink);font-family:var(--f-display);font-size:20px;letter-spacing:.08em;padding:2px 12px}
+.chap h1{font-size:clamp(48px,14vw,92px);max-width:12ch}
+.flash{position:fixed;inset:0;background:#fff;z-index:12;pointer-events:none;animation:flash .5s ease-out forwards}
+@keyframes flash{from{opacity:1}to{opacity:0}}
+
+/* urna */
+.urna{background:#d9d4c7;border-radius:14px;padding:12px;display:grid;grid-template-columns:1.25fr 1fr;gap:10px}
+.tela{background:#f7f7f2;border-radius:8px;padding:10px;display:flex;flex-direction:column;gap:8px;min-height:190px;font-size:13px}
+.tela .cargo{font-weight:800;font-size:16px;letter-spacing:.04em}
+.digs{display:flex;gap:4px}
+.digs span{width:24px;height:30px;border:1.5px solid var(--ink);display:grid;place-items:center;font-weight:800;font-size:18px;background:#fff;font-variant-numeric:tabular-nums}
+.tela .inst{margin-top:auto;border-top:1px solid var(--ink);padding-top:6px;font-size:11px;line-height:1.3}
+.teclado{background:#2a2a30;border-radius:8px;padding:8px;display:grid;grid-template-columns:repeat(3,1fr);gap:5px}
+.teclado button{background:#111;color:#fff;border-radius:5px;padding:8px 0;font-weight:800;font-size:16px}
+.teclado .z{grid-column:2}
+.acoes{grid-column:1/-1;display:grid;grid-template-columns:repeat(3,1fr);gap:6px}
+.acoes button{border-radius:6px;padding:10px 2px;font-weight:800;font-size:12.5px;letter-spacing:.03em}
+.acoes .branco{background:#fff}.acoes .corrige{background:#F58B2C}.acoes .confirma{background:#2BB24C;color:#fff}
+
+/* final */
+.ovl.final{background:var(--soft);overflow:auto;display:block;user-select:auto}
+.fin{width:min(480px,100%);margin:0 auto;padding:calc(20px + env(safe-area-inset-top,0px)) max(16px,env(safe-area-inset-right,0px)) calc(32px + env(safe-area-inset-bottom,0px)) max(16px,env(safe-area-inset-left,0px));display:flex;flex-direction:column;gap:14px}
+.fin img{width:100%;height:auto;border-radius:16px;display:block;box-shadow:0 10px 30px rgba(17,18,22,.18);-webkit-touch-callout:default}
+.fin .panel{background:#fff;border-radius:16px;padding:18px;display:flex;flex-direction:column;gap:12px}
+.fin h2{font-size:28px}
+.recap{list-style:none;margin:0;padding:0;display:flex;flex-direction:column}
+.recap li{display:flex;gap:12px;align-items:baseline;padding:8px 0;border-top:1px solid var(--line);font-size:15px}
+.recap li:first-child{border-top:0}
+.recap .c{font-family:var(--f-display);color:var(--blue);flex:none;width:20px}
+.aula{background:var(--lime);border-radius:12px;padding:14px;display:flex;flex-direction:column;gap:6px}
+.loading{position:fixed;inset:0;display:grid;place-items:center;font-family:var(--f-display);font-size:22px;letter-spacing:.06em;color:var(--blue);z-index:20;background:var(--sky)}
+</style>
+
+<canvas id="c" aria-label="Mundo do jogo Antes do Título"></canvas>
+<div class="loading" id="loading">CARREGANDO O BAIRRO…</div>
+<div class="hud" id="hud" hidden>
+  <div class="obj"><div class="cap" id="hCap"></div><div class="txt" id="hObj"></div><div class="voz">Voz <b><i id="hVoz"></i></b></div></div>
+  <div class="tools"><button class="icon" id="snd" aria-label="Desligar som"></button></div>
+</div>
+<div id="joy" hidden><div id="knob"></div></div>
+<div class="hint" id="kbd" hidden>Mover: WASD ou setas · Falar: espaço</div>
+<div class="dlg" id="dlg" hidden><span class="name" id="dName"></span><p class="text" id="dText"></p><div class="choices" id="dCh"></div><span class="more" id="dMore">Toque para continuar ▸</span></div>
+<div id="ovl"></div>
+
+<script src="https://cdn.jsdelivr.net/npm/three@0.149.0/build/three.min.js"></script>
+<script>
+(() => {
+const $ = s => document.querySelector(s);
+const esc = s => String(s).replace(/[&<>"]/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const V3 = (x,y,z) => new THREE.Vector3(x,y,z);
+
+/* =========================================================
+   CONTEÚDO
+   ========================================================= */
+const PERFIS = [
+  {k:'bairro', t:'Num bairro de cidade grande', intro:'Você mora num bairro longe do centro. Pra tudo é preciso pegar ônibus.', lugar:'no seu bairro'},
+  {k:'interior', t:'Numa cidade pequena do interior', intro:'Você mora numa cidade pequena, onde todo mundo se conhece.', lugar:'na sua cidade'},
+  {k:'estudante', t:'Na correria entre escola e cursinho', intro:'Você passa o dia entre a escola, o cursinho e um bico no fim de semana.', lugar:'perto de casa'}
+];
+const TEMAS = {
+  transporte:{nome:'Transporte', alvo:'ponto', lugarNome:'o ponto de ônibus',
+    problema:l=>`O ônibus passa de 50 em 50 minutos ${l}. Hoje você perdeu a primeira aula de novo, e a passagem come metade do dinheiro do lanche.`,
+    quem:'O transporte coletivo dentro da cidade é da prefeitura: ela define linhas, horários e contratos com as empresas. A Câmara aprova leis, como as regras de meia passagem, e fiscaliza a prefeitura. Ônibus entre cidades fica com o governo do estado.',
+    exTitulo:'Os 20 centavos de 2013',
+    exemplo:'Em junho de 2013, depois de semanas de protestos contra o aumento da passagem, prefeitos e governadores de capitais como São Paulo e Rio de Janeiro voltaram atrás e cancelaram o reajuste de R$ 0,20.'},
+  escola:{nome:'Escola', alvo:'escola', lugarNome:'a escola',
+    problema:()=>'Sua escola está sem professor de matemática faz dois meses. O ventilador da sala quebrou, e ninguém sabe dizer quando volta.',
+    quem:'Escolas de educação infantil e ensino fundamental costumam ser da prefeitura. O ensino médio público é, na maioria, do governo do estado. Regras nacionais, como o currículo e o Fundeb, que financia a educação básica, passam pelo Congresso.',
+    exTitulo:'Pé-de-Meia',
+    exemplo:'Em 2024, o Congresso aprovou e o presidente sancionou a lei do Pé-de-Meia (Lei 14.818/2024): estudantes do ensino médio público de famílias de baixa renda recebem um incentivo em dinheiro por frequência e aprovação.'},
+  saude:{nome:'Saúde', alvo:'posto', lugarNome:'o posto de saúde',
+    problema:l=>`Sua avó precisou de consulta e a fila do posto de saúde ${l} começou às 5h da manhã. As fichas acabaram antes da vez dela.`,
+    quem:'O posto de saúde é administrado pela prefeitura. Hospitais maiores podem ser da prefeitura, do estado ou da União. O SUS é financiado pelos três, e o orçamento da saúde da cidade é votado aqui na Câmara.',
+    exTitulo:'Absorvente gratuito',
+    exemplo:'Em 2021, o Congresso aprovou a distribuição gratuita de absorventes para estudantes de baixa renda e pessoas em vulnerabilidade. O presidente vetou essa parte. Em 2022, deputados e senadores derrubaram o veto, e a Lei 14.214/2021 passou a valer.'},
+  seguranca:{nome:'Segurança', alvo:'ponto', lugarNome:'a rua do ponto de ônibus',
+    problema:l=>`A rua do ponto de ônibus ${l} fica escura à noite. Duas lâmpadas estão queimadas há meses, e todo mundo volta correndo pra casa.`,
+    quem:'As polícias Militar e Civil são do governo do estado. Iluminação pública e guarda municipal são da prefeitura. Leis que definem crimes e penas são feitas pelo Congresso.',
+    exTitulo:'Lei Maria da Penha',
+    exemplo:'Em 2006, o Congresso aprovou a Lei Maria da Penha (Lei 11.340/2006), que criou medidas protetivas para mulheres em situação de violência doméstica. A lei leva o nome de uma farmacêutica cearense que lutou por quase 20 anos por justiça.'},
+  lazer:{nome:'Lazer', alvo:'quadra', lugarNome:'a quadra',
+    problema:l=>`A única quadra ${l} está com a rede rasgada e o piso quebrado. A galera não tem onde jogar nem se encontrar no fim de semana.`,
+    quem:'Praças, quadras e centros culturais são da prefeitura, e o dinheiro para eles é votado aqui na Câmara. Leis nacionais, como a da meia-entrada, saem do Congresso.',
+    exTitulo:'Meia-entrada',
+    exemplo:'Em 2013, a Lei da Meia-Entrada (Lei 12.933/2013) garantiu meia em cinema, shows e jogos para estudantes, pessoas com deficiência e jovens de 15 a 29 anos de baixa renda. Foi votada por deputados e senadores eleitos.'}
+};
+const PIORA = {transporte:'a linha de ônibus que você usa vai ter menos horários', escola:'a reforma da sua escola foi adiada para o ano que vem', saude:'o posto de saúde vai fechar mais cedo às sextas', seguranca:'a troca das lâmpadas da rua ficou para o ano que vem', lazer:'o dinheiro da reforma da quadra foi para outra obra'};
+const PASSOS = [
+  '<b>Quem pode:</b> dá para pedir o título a partir dos 15 anos, se você completar 16 até o dia da eleição.',
+  '<b>Documentos:</b> documento oficial com foto e comprovante de residência. Para homens maiores de 18, também é pedido o comprovante de quitação militar.',
+  '<b>Onde:</b> pelo Autoatendimento Eleitoral, no site do TSE, ou num cartório eleitoral.',
+  '<b>Pela internet:</b> você envia fotos dos documentos e uma selfie segurando o documento.',
+  '<b>Biometria:</b> se for pedido, você agenda no cartório a coleta das digitais e da foto.',
+  '<b>Depois:</b> acompanhe pelo número do protocolo e, aprovado, baixe o app e-Título.',
+  '<b>Prazo e custo:</b> é gratuito, e o cadastro fecha 150 dias antes da eleição.'
+];
+const BOATOS = [
+  {npc:'raimundo', q:'Título? Isso só dá pra tirar com 18 anos.', v:false, a:'Dá para pedir a partir dos 15 anos, desde que você complete 16 até o dia da eleição.'},
+  {npc:'fatima', q:'Tirar o título custa uma taxa. Tem que pagar lá no cartório.', v:false, a:'É gratuito. Qualquer pessoa ou mensagem cobrando taxa é golpe.'},
+  {npc:'juliana', q:'Com 16 e 17 anos, votar é opcional. Só fica obrigatório aos 18.', v:true, a:'Com 16 e 17 anos o voto é facultativo. Dos 18 aos 70, é obrigatório.'},
+  {npc:'pedro', q:'Relaxa, dá pra tirar o título na semana da eleição.', v:false, a:'O cadastro eleitoral fecha 150 dias antes da eleição. Quem deixa pra depois fica de fora.'}
+];
+const MSGS = [
+  {from:'Grupo da família · Encaminhada', txt:'ATENÇÃO!! Por causa do movimento, quem vota no partido Azul vai votar na segunda-feira. Avisa todo mundo!!', v:false,
+   exp:'A votação acontece num único dia, para todo mundo. Mensagem que pede pra "avisar todo mundo" e não cita fonte merece desconfiança.'},
+  {from:'Justiça Eleitoral · perfil oficial', txt:'Pode levar "colinha"! O eleitor pode anotar os números dos candidatos num papel e levar para a cabine.', v:true,
+   exp:'A cola em papel é permitida. O celular é que não entra: fica com o mesário.'},
+  {from:'SMS · número desconhecido', txt:'TSE INFORMA: sua seção eleitoral mudou. Confirme seus dados em tse-eleitor-atualiza.com', v:false,
+   exp:'É golpe. Sites oficiais da Justiça Eleitoral terminam em .jus.br, e o local de votação se confere no app e-Título.'}
+];
+const DIA = [
+  '<b>Documento:</b> documento oficial com foto. O e-Título com foto também vale.',
+  '<b>Onde votar:</b> confira o local e a seção no app e-Título.',
+  '<b>Horário:</b> das 8h às 17h, horário de Brasília.',
+  '<b>Na cabine:</b> celular fica com o mesário. A colinha de papel pode.',
+  '<b>Ordem:</b> na eleição municipal, primeiro vereador, depois prefeito.'
+];
+const CAPS = ['O incômodo','Política não adianta','Quem decide isso?','A decisão','O caminho até a urna'];
+
+/* opções de personagem */
+const OPT = {
+  pele:['#F3D3B5','#E0AC82','#B97A50','#8A5634','#5A3622'],
+  cabelo:[['curto','Curto'],['afro','Black'],['coque','Coque'],['trancas','Tranças'],['longo','Longo'],['raspado','Raspado']],
+  corCabelo:['#1B1410','#4A2C1A','#A0522D','#E2B659','#FF7AD9','#2F4BFF'],
+  camisa:['#2F4BFF','#E6FF3B','#FF5A1F','#BFFF8A','#FF7AD9','#FFFFFF','#111216'],
+  calca:['#1F2433','#3B5B92','#6B4E3D','#2F4BFF','#E8CCFF'],
+  acess:[['nenhum','Nenhum'],['bone','Boné'],['fone','Fone'],['oculos','Óculos'],['mochila','Mochila']]
+};
+
+/* =========================================================
+   ESTADO
+   ========================================================= */
+const st0 = () => ({cap:0, nome:'', perfil:0, tema:'transporte', voz:0, ch:{}, rec:[], acertos:0, checks:0,
+  skin:{pele:OPT.pele[1], cabelo:'afro', corCabelo:OPT.corCabelo[0], camisa:OPT.camisa[0], calca:OPT.calca[0], acess:'fone'}});
+let st = st0();
+const N = () => st.nome || 'Ari';
+const T = () => TEMAS[st.tema];
+const P = () => PERFIS[st.perfil];
+function rec(cap, t){ st.rec.push([cap,t]); }
+
+/* =========================================================
+   ÁUDIO (tudo sintetizado com Web Audio)
+   ========================================================= */
+const AU = {ctx:null, on:true};
+const midi = m => 440*Math.pow(2,(m-69)/12);
+function audioInit(){
+  if(AU.ctx){ if(AU.ctx.state==='suspended') AU.ctx.resume(); return; }
+  const C = window.AudioContext || window.webkitAudioContext; if(!C) return;
+  const c = AU.ctx = new C();
+  AU.master = c.createGain(); AU.master.gain.value = AU.on ? .9 : 0; AU.master.connect(c.destination);
+  AU.sfx = c.createGain(); AU.sfx.gain.value = .55; AU.sfx.connect(AU.master);
+  AU.mus = c.createGain(); AU.mus.gain.value = .2; AU.mus.connect(AU.master);
+  const len = c.sampleRate*.25, b = c.createBuffer(1,len,c.sampleRate), d = b.getChannelData(0);
+  for(let i=0;i<len;i++) d[i] = Math.random()*2-1;
+  AU.noise = b;
+  startMusic();
+}
+function tone(f, t0, dur, type='square', vol=.2, dest=AU.sfx, slide=0){
+  const c = AU.ctx, o = c.createOscillator(), g = c.createGain();
+  o.type = type; o.frequency.setValueAtTime(f, t0);
+  if(slide) o.frequency.exponentialRampToValueAtTime(Math.max(30, f*slide), t0+dur);
+  g.gain.setValueAtTime(.0001, t0); g.gain.exponentialRampToValueAtTime(vol, t0+.012); g.gain.exponentialRampToValueAtTime(.0001, t0+dur);
+  o.connect(g); g.connect(dest); o.start(t0); o.stop(t0+dur+.05);
+}
+function noise(t0, dur, freq, vol){
+  const c = AU.ctx, s = c.createBufferSource(), f = c.createBiquadFilter(), g = c.createGain();
+  s.buffer = AU.noise; f.type = 'bandpass'; f.frequency.value = freq; f.Q.value = 1.2;
+  g.gain.setValueAtTime(vol, t0); g.gain.exponentialRampToValueAtTime(.0001, t0+dur);
+  s.connect(f); f.connect(g); g.connect(AU.sfx); s.start(t0); s.stop(t0+dur);
+}
+const now = () => AU.ctx.currentTime;
+const SFX = {
+  click(){ if(!AU.ctx) return; tone(900, now(), .05, 'triangle', .12); },
+  talk(base){ if(!AU.ctx) return; tone(base*(.9+Math.random()*.25), now(), .05, 'square', .035); },
+  step(){ if(!AU.ctx) return; noise(now(), .07, 260+Math.random()*120, .18); },
+  pick(){ if(!AU.ctx) return; const t=now(); [72,76,79,84].forEach((m,i)=>tone(midi(m), t+i*.07, .18, 'triangle', .16)); },
+  ok(){ if(!AU.ctx) return; const t=now(); tone(midi(76),t,.12,'square',.08); tone(midi(83),t+.1,.25,'square',.08); },
+  no(){ if(!AU.ctx) return; tone(200, now(), .3, 'sawtooth', .06, AU.sfx, .55); },
+  chapter(){ if(!AU.ctx) return; const t=now(); [60,64,67,72].forEach((m,i)=>tone(midi(m), t+i*.09, 1.4, 'triangle', .09)); tone(midi(48), t, 1.6, 'sine', .2); },
+  win(){ if(!AU.ctx) return; const t=now(); [67,72,76,79,84].forEach((m,i)=>tone(midi(m), t+i*.1, .35, 'square', .06)); },
+  shutter(){ if(!AU.ctx) return; const t=now(); noise(t,.05,3000,.4); noise(t+.07,.08,1800,.3); },
+  key(){ if(!AU.ctx) return; tone(1250, now(), .06, 'square', .08); },
+  urnaFim(){ if(!AU.ctx) return; const t=now(); for(let i=0;i<5;i++) tone(1050, t+i*.11, i===4?.5:.07, 'square', .08); },
+  vibra(){ if(!AU.ctx) return; const t=now(); tone(120,t,.15,'sawtooth',.06); tone(120,t+.2,.15,'sawtooth',.06); }
+};
+const PROG = [[60,64,67,71],[57,60,64,67],[53,57,60,64],[55,59,62,65]];
+function startMusic(){
+  let step = 0, nt = AU.ctx.currentTime + .15; const e8 = 60/98/2;
+  setInterval(()=>{
+    if(!AU.ctx || AU.ctx.state!=='running') return;
+    while(nt < AU.ctx.currentTime + .3){
+      const bar = Math.floor(step/8)%4, e = step%8, ch = PROG[bar], arp = [0,2,1,3,2,1,3,2];
+      tone(midi(ch[arp[e]]+12), nt, .26, 'triangle', .07, AU.mus);
+      if(e===0||e===4) tone(midi(ch[0]-12), nt, .45, 'sine', .22, AU.mus);
+      if(e===0) ch.forEach(m=>tone(midi(m), nt, e8*8, 'sine', .028, AU.mus));
+      if(e===2||e===6) noise(nt, .04, 7000, .05);
+      nt += e8; step++;
+    }
+  }, 60);
+}
+function setSound(on){
+  AU.on = on;
+  if(AU.master) AU.master.gain.setTargetAtTime(on ? .9 : 0, AU.ctx.currentTime, .05);
+  $('#snd').innerHTML = on
+    ? '<svg viewBox="0 0 24 24" fill="none" stroke="#111216" stroke-width="2" stroke-linecap="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M16 8.5a5 5 0 0 1 0 7M19 6a8.5 8.5 0 0 1 0 12"/></svg>'
+    : '<svg viewBox="0 0 24 24" fill="none" stroke="#111216" stroke-width="2" stroke-linecap="round"><path d="M4 9h4l5-4v14l-5-4H4z"/><path d="M17 9l5 6M22 9l-5 6"/></svg>';
+  $('#snd').setAttribute('aria-label', on ? 'Desligar som' : 'Ligar som');
+}
+document.addEventListener('visibilitychange', ()=>{ if(!AU.ctx) return; document.hidden ? AU.ctx.suspend() : AU.ctx.resume(); });
+
+/* =========================================================
+   CENA 3D
+   ========================================================= */
+const canvas = $('#c');
+const renderer = new THREE.WebGLRenderer({canvas, antialias:true});
+renderer.setPixelRatio(Math.min(devicePixelRatio, 2));
+renderer.shadowMap.enabled = true;
+renderer.shadowMap.type = THREE.PCFSoftShadowMap;
+const scene = new THREE.Scene();
+const SKY_DAY = new THREE.Color('#CFE6FF'), SKY_ELEICAO = new THREE.Color('#FFE6CC');
+scene.background = SKY_DAY.clone();
+scene.fog = new THREE.Fog(scene.background, 70, 140);
+const camera = new THREE.PerspectiveCamera(45, 1, .1, 300);
+const hemi = new THREE.HemisphereLight('#ffffff', '#9fcf86', .78); scene.add(hemi);
+const sun = new THREE.DirectionalLight('#fff6e8', .85);
+sun.position.set(30, 55, 25); sun.castShadow = true;
+sun.shadow.mapSize.set(2048, 2048);
+Object.assign(sun.shadow.camera, {left:-70, right:70, top:70, bottom:-70, near:1, far:160});
+scene.add(sun);
+
+const mats = {};
+const M = c => mats[c] || (mats[c] = new THREE.MeshStandardMaterial({color:c, roughness:.88, metalness:0, flatShading:true}));
+function mesh(geo, color, x=0, y=0, z=0, parent=scene, shadow=true){
+  const m = new THREE.Mesh(geo, M(color)); m.position.set(x,y,z);
+  if(shadow){ m.castShadow = true; m.receiveShadow = true; }
+  parent.add(m); return m;
+}
+const box = (w,h,d,c,x,y,z,p) => mesh(new THREE.BoxGeometry(w,h,d), c, x, y, z, p);
+const OBS = [];
+function obstacle(x,z,w,d){ OBS.push({minX:x-w/2, maxX:x+w/2, minZ:z-d/2, maxZ:z+d/2}); }
+
+function labelSprite(text, bg='#111216', fg='#FFFFFF', h=1.3){
+  const cv = document.createElement('canvas'), x = cv.getContext('2d');
+  x.font = '64px Anton, Impact, sans-serif';
+  const w = Math.ceil(x.measureText(text).width) + 48;
+  cv.width = w; cv.height = 100;
+  x.fillStyle = bg; x.fillRect(0,0,w,100);
+  x.font = '64px Anton, Impact, sans-serif'; x.fillStyle = fg; x.textBaseline = 'middle'; x.fillText(text, 24, 54);
+  const tex = new THREE.CanvasTexture(cv); tex.anisotropy = 4;
+  const s = new THREE.Sprite(new THREE.SpriteMaterial({map:tex, transparent:true}));
+  s.scale.set(h*w/100, h, 1); return s;
+}
+
+const PLACES = {};
+function building(o){
+  const g = new THREE.Group(); g.position.set(o.x, 0, o.z);
+  g.rotation.y = {'+z':0,'-z':Math.PI,'+x':Math.PI/2,'-x':-Math.PI/2}[o.face||'+z'];
+  scene.add(g);
+  box(o.w, o.h, o.d, o.wall, 0, o.h/2, 0, g);
+  box(o.w+.6, .5, o.d+.6, o.roof, 0, o.h+.25, 0, g);
+  box(1.8, 2.6, .2, o.door||'#2B2D38', 0, 1.3, o.d/2+.05, g);
+  const nWin = Math.max(1, Math.floor((o.w-3)/3.2));
+  for(let i=0;i<nWin;i++){
+    const xx = -o.w/2 + 1.6 + i*((o.w-3.2)/Math.max(1,nWin-1||1));
+    if(Math.abs(xx) < 1.6) continue;
+    box(1.3, 1.1, .12, '#DDEBFF', xx, o.h*.62, o.d/2+.06, g);
+  }
+  if(o.cols){ for(let i=-3;i<=3;i++){ if(i===0) continue; mesh(new THREE.CylinderGeometry(.35,.35,o.h,10), '#FFFFFF', i*2.6, o.h/2, o.d/2+1.2, g); } box(o.w, .6, 2.6, o.roof, 0, o.h+.1, o.d/2+1.1, g); }
+  const sideways = o.face==='+x' || o.face==='-x';
+  obstacle(o.x, o.z, (sideways?o.d:o.w)+(o.cols?0:0), (sideways?o.w:o.d)+(o.cols?2.6:0));
+  const out = new THREE.Vector3(0, 0, o.d/2 + (o.cols?3.2:1.8)).applyAxisAngle(V3(0,1,0), g.rotation.y);
+  if(o.key) PLACES[o.key] = V3(o.x+out.x, 0, o.z+out.z);
+  if(o.label){ const s = labelSprite(o.label, o.labelBg, o.labelFg); s.position.set(o.x, o.h+2.1, o.z); scene.add(s); }
+  return g;
+}
+function tree(x,z,s=1){
+  const g = new THREE.Group(); g.position.set(x,0,z); scene.add(g);
+  mesh(new THREE.CylinderGeometry(.22*s,.3*s,1.6*s,6), '#8A6448', 0, .8*s, 0, g);
+  const cols = ['#6FCF6A','#58B95E','#93DB6B'];
+  mesh(new THREE.IcosahedronGeometry(1.35*s,0), cols[Math.floor(Math.abs(x*7+z*3))%3], 0, 2.4*s, 0, g);
+  obstacle(x,z,.7,.7);
+}
+function lamp(x,z,broken){
+  mesh(new THREE.CylinderGeometry(.09,.12,4.6,6), '#3A3D4A', x, 2.3, z);
+  const b = mesh(new THREE.SphereGeometry(.32,10,8), broken?'#555866':'#FFF4B8', x, 4.7, z);
+  if(!broken){ b.material = new THREE.MeshBasicMaterial({color:'#FFF4B8'}); }
+  obstacle(x,z,.3,.3);
+}
+function bench(x,z,rot=0){
+  const g = new THREE.Group(); g.position.set(x,0,z); g.rotation.y = rot; scene.add(g);
+  box(2.4,.15,.7,'#C98B55',0,.55,0,g); box(2.4,.6,.12,'#C98B55',0,.95,-.32,g);
+  box(.12,.55,.6,'#3A3D4A',-1,.27,0,g); box(.12,.55,.6,'#3A3D4A',1,.27,0,g);
+}
+
+function buildWorld(){
+  mesh(new THREE.PlaneGeometry(140,140).rotateX(-Math.PI/2), '#BFE89A', 0, 0, 0, scene, false).receiveShadow = true;
+  const road = '#4A4D5A';
+  mesh(new THREE.PlaneGeometry(124,8).rotateX(-Math.PI/2), road, 0, .02, 0, scene, false).receiveShadow = true;
+  mesh(new THREE.PlaneGeometry(8,100).rotateX(-Math.PI/2), road, 0, .03, 12, scene, false).receiveShadow = true;
+  for(let i=-58;i<=58;i+=6){ if(Math.abs(i)>5) mesh(new THREE.PlaneGeometry(2.4,.25).rotateX(-Math.PI/2), '#F4F5F0', i, .04, 0, scene, false); }
+  for(let i=-34;i<=58;i+=6){ if(Math.abs(i)>5) mesh(new THREE.PlaneGeometry(.25,2.4).rotateX(-Math.PI/2), '#F4F5F0', 0, .04, i, scene, false); }
+  // calçadas e praças
+  mesh(new THREE.PlaneGeometry(26,10).rotateX(-Math.PI/2), '#E9E6DA', 0, .025, -42, scene, false);
+  mesh(new THREE.CircleGeometry(11,28).rotateX(-Math.PI/2), '#E9E6DA', -20, .025, -20, scene, false);
+
+  building({key:'casa', x:-20, z:16, w:10, d:8, h:5, wall:'#E8CCFF', roof:'#2F4BFF', face:'-z', label:'SUA CASA', labelBg:'#FFFFFF', labelFg:'#111216'});
+  building({key:'posto', x:-42, z:16, w:12, d:9, h:5, wall:'#FFFFFF', roof:'#FF5A1F', face:'-z', label:'POSTO DE SAÚDE'});
+  building({key:'biblioteca', x:-42, z:-18, w:12, d:9, h:6, wall:'#FFE9A8', roof:'#111216', face:'+z', label:'BIBLIOTECA'});
+  building({key:'escola', x:22, z:-18, w:18, d:10, h:7, wall:'#FF5A1F', roof:'#FFFFFF', face:'+z', label:'ESCOLA', labelBg:'#E6FF3B', labelFg:'#111216'});
+  building({key:'camara', x:0, z:-48, w:22, d:10, h:8, wall:'#FFFFFF', roof:'#2F4BFF', face:'+z', cols:true, label:'CÂMARA MUNICIPAL', labelBg:'#2F4BFF'});
+  building({key:'cartorio', x:42, z:16, w:12, d:9, h:6, wall:'#C9D6FF', roof:'#111216', face:'-z', label:'CARTÓRIO ELEITORAL'});
+  // casas de vizinhos
+  [[-36,34,'#FFD2BF'],[-12,36,'#BFFF8A'],[14,36,'#FFFFFF'],[38,36,'#E8CCFF'],[44,-40,'#FFE9A8'],[-30,-44,'#FFD2BF'],[56,-14,'#BFFF8A']].forEach(([x,z,c])=>building({x,z,w:8,d:7,h:4.2,wall:c,roof:'#5A5D6B',face:'-z'}));
+
+  // ponto de ônibus
+  const px=8, pz=-6.2;
+  box(5,.15,1.8,'#2F4BFF',px,2.7,pz); box(.15,2.7,.15,'#3A3D4A',px-2.3,1.35,pz-.7); box(.15,2.7,.15,'#3A3D4A',px+2.3,1.35,pz-.7);
+  box(4.6,2.2,.08,'#DDEBFF',px,1.6,pz-.8); box(3.2,.15,.6,'#C98B55',px,.6,pz-.4);
+  const sp = labelSprite('PONTO', '#E6FF3B', '#111216', .9); sp.position.set(px+3.2, 3.4, pz); scene.add(sp);
+  mesh(new THREE.CylinderGeometry(.08,.08,3.2,6), '#3A3D4A', px+3.2, 1.6, pz);
+  obstacle(px, pz-.5, 5, 1.4);
+  PLACES.ponto = V3(px, 0, -3.6);
+  lamp(13,-5.3,true); lamp(18,-5.3,true); lamp(-12,-5.3,false); lamp(-28,-5.3,false); lamp(28,5.3,false); lamp(-14,5.3,false);
+
+  // quadra
+  mesh(new THREE.PlaneGeometry(15,9).rotateX(-Math.PI/2), '#FF8A4C', 20, .03, 19, scene, false);
+  mesh(new THREE.RingGeometry(1.6,1.8,24).rotateX(-Math.PI/2), '#FFFFFF', 20, .04, 19, scene, false);
+  mesh(new THREE.PlaneGeometry(.15,9).rotateX(-Math.PI/2), '#FFFFFF', 20, .04, 19, scene, false);
+  [12.8,27.2].forEach((x,i)=>{ box(.2,3.4,.2,'#3A3D4A',x,1.7,19); box(.1,1,1.6,'#FFFFFF',x+(i?-.2:.2),3.4,19); mesh(new THREE.TorusGeometry(.4,.05,6,14).rotateX(Math.PI/2), '#FF5A1F', x+(i?-.7:.7), 3.0, 19); obstacle(x,19,.3,.3); });
+  PLACES.quadra = V3(20, 0, 13.5);
+  const ql = labelSprite('QUADRA', '#FFFFFF', '#111216', 1); ql.position.set(20, 4.6, 19); scene.add(ql);
+
+  // praça
+  mesh(new THREE.CylinderGeometry(2.4,2.6,.8,18), '#F4F5F0', -20, .4, -20);
+  mesh(new THREE.CylinderGeometry(2,2,.1,18), '#7FC8FF', -20, .82, -20, scene, false);
+  mesh(new THREE.CylinderGeometry(.25,.35,1.6,8), '#F4F5F0', -20, 1.4, -20);
+  obstacle(-20,-20,5,5);
+  bench(-20,-12.6,Math.PI); bench(-27.5,-20,Math.PI/2); bench(-12.5,-20,-Math.PI/2); bench(-20,-27.4,0);
+  // moldura de selfie
+  const fg = new THREE.Group(); fg.position.set(-27,0,-12); fg.rotation.y = .6; scene.add(fg);
+  box(.2,3,.2,'#111216',-1.2,1.5,0,fg); box(.2,3,.2,'#111216',1.2,1.5,0,fg); box(2.6,.25,.2,'#E6FF3B',0,3,0,fg); box(2.6,.25,.2,'#E6FF3B',0,1.2,0,fg);
+  PLACES.selfie = V3(-26, 0, -10.4);
+  // caixa de correio
+  mesh(new THREE.CylinderGeometry(.08,.08,1.1,6), '#3A3D4A', -14.5, .55, 11.2);
+  box(.8,.6,.5,'#2F4BFF',-14.5,1.35,11.2);
+  PLACES.correio = V3(-14.5, 0, 9.6);
+
+  [[-8,-12],[-8,-28],[-32,-28],[-32,-10],[-30,-34],[-12,-34],[-52,0],[-52,30],[-28,28],[-6,24],[8,26],[30,28],[52,30],[52,4],[34,-6],[12,-28],[36,-30],[-6,-40],[14,-40],[-50,-34],[54,-28],[30,6],[-40,6],[-24,6]].forEach(([x,z],i)=>tree(x,z,.85+((i*37)%10)/25));
+
+  // nuvens
+  CLOUDS.length = 0;
+  for(let i=0;i<7;i++){
+    const g = new THREE.Group(); g.position.set(-70+i*24, 34+(i%3)*4, -50+((i*29)%80)); scene.add(g);
+    [[0,0,0,5],[3.4,.4,.6,3.6],[-3.4,.2,-.4,3.4]].forEach(([x,y,z,r])=>{ const m = new THREE.Mesh(new THREE.IcosahedronGeometry(r,1), new THREE.MeshLambertMaterial({color:'#FFFFFF'})); m.position.set(x,y,z); m.scale.y=.55; g.add(m); });
+    CLOUDS.push(g);
+  }
+}
+const CLOUDS = [];
+
+/* ---------- personagens ---------- */
+function makeChar(o){
+  const g = new THREE.Group(); const u = g.userData;
+  const skin = o.pele, cap = (r,l,c)=>new THREE.CapsuleGeometry(r,l,4,10);
+  const torso = mesh(cap(.4,.55), o.camisa, 0, 1.22, 0, g);
+  torso.scale.z = .72;
+  const head = new THREE.Group(); head.position.y = 1.98; g.add(head); u.head = head;
+  mesh(new THREE.SphereGeometry(.38,18,14), skin, 0, 0, 0, head);
+  mesh(new THREE.SphereGeometry(.05,8,6), '#111216', -.13, .02, .34, head);
+  mesh(new THREE.SphereGeometry(.05,8,6), '#111216', .13, .02, .34, head);
+  const hc = o.corCabelo;
+  const capG = (r,t)=>new THREE.SphereGeometry(r,18,12,0,Math.PI*2,0,Math.PI*t);
+  if(o.cabelo==='curto'){ const c = mesh(capG(.4,.5), hc, 0, .02, -.02, head); c.rotation.x = -.25; }
+  if(o.cabelo==='afro'){ mesh(new THREE.IcosahedronGeometry(.58,1), hc, 0, .22, -.1, head); }
+  if(o.cabelo==='coque'){ const c = mesh(capG(.4,.52), hc, 0, .02, -.02, head); c.rotation.x = -.25; mesh(new THREE.SphereGeometry(.2,12,10), hc, 0, .42, -.22, head); }
+  if(o.cabelo==='trancas'){ const c = mesh(capG(.4,.52), hc, 0, .02, -.02, head); c.rotation.x = -.25; [-.26,.26].forEach(x=>mesh(new THREE.CylinderGeometry(.07,.06,.8,6), hc, x, -.42, -.18, head)); }
+  if(o.cabelo==='longo'){ const c = mesh(capG(.41,.55), hc, 0, .02, -.02, head); c.rotation.x = -.2; box(.74,.75,.2, hc, 0, -.3, -.24, head); }
+  if(o.cabelo==='raspado'){ const c = mesh(capG(.385,.42), hc, 0, .02, -.03, head); c.rotation.x = -.25; }
+  if(o.acess==='bone'){ const c = mesh(capG(.41,.48), o.camisa==='#111216'?'#E6FF3B':'#111216', 0, .05, 0, head); c.rotation.x = -.15; box(.5,.05,.38, '#111216', 0, .18, .38, head); }
+  if(o.acess==='fone'){ mesh(new THREE.TorusGeometry(.43,.05,6,18,Math.PI), '#111216', 0, .05, -.02, head); [-.42,.42].forEach(x=>mesh(new THREE.CylinderGeometry(.13,.13,.12,12).rotateZ(Math.PI/2), '#E6FF3B', x, 0, 0, head)); }
+  if(o.acess==='oculos'){ [-.14,.14].forEach(x=>mesh(new THREE.TorusGeometry(.1,.025,6,14), '#111216', x, .03, .37, head)); }
+  if(o.acess==='mochila'){ box(.62,.72,.3, '#E6FF3B', 0, 1.25, -.4, g); }
+  const limb = (x, y, len, r, color, parent) => { const p = new THREE.Group(); p.position.set(x,y,0); parent.add(p); mesh(cap(r,len), color, 0, -len/2-r*.4, 0, p); return p; };
+  u.armL = limb(-.52, 1.5, .5, .12, skin, g);
+  u.armR = limb(.52, 1.5, .5, .12, skin, g);
+  [u.armL,u.armR].forEach(a=>{ const s = mesh(new THREE.SphereGeometry(.17,10,8), o.camisa, 0, -.04, 0, a); s.scale.y=.9; });
+  u.legL = limb(-.2, .82, .45, .15, o.calca, g);
+  u.legR = limb(.2, .82, .45, .15, o.calca, g);
+  [u.legL,u.legR].forEach(l=>box(.28,.16,.42,'#F4F5F0',0,-.76,.06,l));
+  u.phase = 0;
+  return g;
+}
+function animChar(ch, moving, dt){
+  const u = ch.userData;
+  u.phase += dt * (moving ? 11 : 2.2);
+  const s = moving ? Math.sin(u.phase) * .75 : 0;
+  u.legL.rotation.x = s; u.legR.rotation.x = -s;
+  u.armL.rotation.x = -s*.8; u.armR.rotation.x = s*.8;
+  ch.children[0].position.y = 1.22 + (moving ? Math.abs(Math.cos(u.phase))*.06 : Math.sin(u.phase)*.02);
+}
+
+const NPCS = {};
+const NPC_DEF = [
+  ['mae','Mãe',{pele:'#B97A50',cabelo:'coque',corCabelo:'#1B1410',camisa:'#FF7AD9',calca:'#3B5B92',acess:'nenhum'}, -16,10.4, -.6],
+  ['leo','Léo',{pele:'#E0AC82',cabelo:'curto',corCabelo:'#4A2C1A',camisa:'#111216',calca:'#1F2433',acess:'bone'}, -20,-11.4, Math.PI],
+  ['socorro','Dona Socorro',{pele:'#8A5634',cabelo:'curto',corCabelo:'#E8E8E8',camisa:'#FFFFFF',calca:'#2F4BFF',acess:'oculos'}, 3,-38.8, .3],
+  ['bia','Bia',{pele:'#5A3622',cabelo:'trancas',corCabelo:'#1B1410',camisa:'#E6FF3B',calca:'#1F2433',acess:'mochila'}, 16,-11, .4],
+  ['atendente','Atendente',{pele:'#F3D3B5',cabelo:'longo',corCabelo:'#A0522D',camisa:'#2F4BFF',calca:'#1F2433',acess:'nenhum'}, 45,9.6, -.3],
+  ['biblio','Bibliotecária',{pele:'#E0AC82',cabelo:'coque',corCabelo:'#4A2C1A',camisa:'#BFFF8A',calca:'#6B4E3D',acess:'oculos'}, -39,-11.2, -.4],
+  ['caio','Caio',{pele:'#B97A50',cabelo:'raspado',corCabelo:'#1B1410',camisa:'#FF5A1F',calca:'#1F2433',acess:'nenhum'}, 23,19, -1],
+  ['raimundo','Seu Raimundo',{pele:'#E0AC82',cabelo:'raspado',corCabelo:'#BBBBBB',camisa:'#C9D6FF',calca:'#6B4E3D',acess:'bone'}, -11.5,-24, -1.2],
+  ['fatima','Dona Fátima',{pele:'#8A5634',cabelo:'afro',corCabelo:'#BBBBBB',camisa:'#FF7AD9',calca:'#1F2433',acess:'oculos'}, -28,-27, .8],
+  ['juliana','Juliana',{pele:'#F3D3B5',cabelo:'longo',corCabelo:'#1B1410',camisa:'#BFFF8A',calca:'#3B5B92',acess:'fone'}, -29.5,-15.5, 1.4],
+  ['pedro','Pedro',{pele:'#5A3622',cabelo:'afro',corCabelo:'#1B1410',camisa:'#E8CCFF',calca:'#1F2433',acess:'nenhum'}, -12,-15.5, -1.8],
+  ['homem','Homem do adesivo',{pele:'#E0AC82',cabelo:'curto',corCabelo:'#1B1410',camisa:'#FFFFFF',calca:'#1F2433',acess:'bone'}, 18.5,-9.4, 0]
+];
+const VOICE = {}; // tom de voz por personagem
+function spawnNPCs(){
+  NPC_DEF.forEach(([id,name,skin,x,z,r],i)=>{
+    const c = makeChar(skin); c.position.set(x,0,z); c.rotation.y = r; c.userData.baseRot = r; c.userData.name = name;
+    scene.add(c); NPCS[id] = c; VOICE[name] = 180 + (i*53)%260;
+    obstacle(x,z,.8,.8);
+  });
+  NPCS.homem.visible = false;
+}
+const npcPos = id => V3(NPCS[id].position.x, 0, NPCS[id].position.z);
+
+/* ---------- jogador ---------- */
+let player = null;
+function buildPlayer(){
+  const pos = player ? player.position.clone() : V3(-20,0,8.6);
+  const rot = player ? player.rotation.y : Math.PI;
+  if(player) scene.remove(player);
+  player = makeChar(st.skin); player.position.copy(pos); player.rotation.y = rot; scene.add(player);
+}
+
+/* ---------- marcadores de objetivo ---------- */
+const beamMat = new THREE.MeshBasicMaterial({color:'#E6FF3B', transparent:true, opacity:.28, depthWrite:false, side:THREE.DoubleSide});
+const gemMat = new THREE.MeshStandardMaterial({color:'#E6FF3B', emissive:'#9aa800', emissiveIntensity:.35, roughness:.4, flatShading:true});
+function makeMarker(pos, prop){
+  const g = new THREE.Group(); g.position.copy(pos);
+  const beam = new THREE.Mesh(new THREE.CylinderGeometry(.75,.75,26,14,1,true), beamMat); beam.position.y = 13; g.add(beam);
+  const gem = new THREE.Mesh(new THREE.OctahedronGeometry(.45), gemMat); gem.position.y = 3.6; g.add(gem); g.userData.gem = gem;
+  const ring = new THREE.Mesh(new THREE.RingGeometry(1.1,1.35,28).rotateX(-Math.PI/2), new THREE.MeshBasicMaterial({color:'#E6FF3B', transparent:true, opacity:.8})); ring.position.y = .06; g.add(ring); g.userData.ring = ring;
+  if(prop){ const p = PROPS[prop](); p.position.y = 1.3; g.add(p); g.userData.prop = p; }
+  scene.add(g); return g;
+}
+const PROPS = {
+  rg:()=>{ const g=new THREE.Group(); box(.9,.6,.06,'#2F4BFF',0,0,0,g); box(.28,.34,.07,'#F3D3B5',-.22,0,.01,g); return g; },
+  carta:()=>{ const g=new THREE.Group(); box(.9,.6,.05,'#FFFFFF',0,0,0,g); box(.9,.08,.06,'#FF5A1F',0,.12,.01,g); return g; },
+  camera:()=>{ const g=new THREE.Group(); box(.4,.75,.08,'#111216',0,0,0,g); box(.32,.6,.09,'#E6FF3B',0,0,.01,g); return g; },
+  fone:()=>{ const g=new THREE.Group(); box(.42,.78,.08,'#111216',0,0,0,g); box(.34,.62,.09,'#FF7AD9',0,0,.01,g); return g; }
+};
+const guide = new THREE.Mesh(new THREE.ConeGeometry(.28,.7,4).rotateX(Math.PI/2), new THREE.MeshBasicMaterial({color:'#2F4BFF'}));
+guide.visible = false; scene.add(guide);
+
+/* =========================================================
+   UI: diálogo, escolhas, cartões
+   ========================================================= */
+const ui = {lock:0, keyFn:null};
+const dlg = $('#dlg'), dName = $('#dName'), dText = $('#dText'), dCh = $('#dCh'), dMore = $('#dMore');
+let hideTimer = null;
+function openDlg(){ ui.lock++; clearTimeout(hideTimer); dlg.hidden = false; }
+function closeDlg(){ ui.lock = Math.max(0, ui.lock-1); hideTimer = setTimeout(()=>{ if(!dlg.dataset.busy) dlg.hidden = true; }, 60); }
+function lookAtPlayer(id){ const n = NPCS[id]; if(!n) return; n.rotation.y = Math.atan2(player.position.x-n.position.x, player.position.z-n.position.z); player.rotation.y = Math.atan2(n.position.x-player.position.x, n.position.z-player.position.z); }
+
+function say(name, text){
+  return new Promise(res=>{
+    openDlg(); dlg.dataset.busy = '1';
+    dName.hidden = !name; dName.textContent = name || '';
+    dText.className = 'text' + (name ? '' : ' narr');
+    dCh.innerHTML = ''; dMore.hidden = true;
+    const base = VOICE[name] || (name===N() ? 330 : 0);
+    let i = 0, done = false;
+    const iv = setInterval(()=>{
+      i += 2; dText.textContent = text.slice(0,i);
+      if(base && i%4===0) SFX.talk(base);
+      if(i >= text.length){ clearInterval(iv); done = true; dMore.hidden = false; }
+    }, 24);
+    const adv = () => {
+      if(!done){ clearInterval(iv); dText.textContent = text; done = true; dMore.hidden = false; return; }
+      dlg.onclick = null; ui.keyFn = null; delete dlg.dataset.busy; SFX.click(); closeDlg(); res();
+    };
+    dlg.onclick = adv;
+    ui.keyFn = e => { if(e.key===' '||e.key==='Enter'){ e.preventDefault(); adv(); } };
+  });
+}
+function choose(opts, name, prompt){
+  return new Promise(res=>{
+    openDlg(); dlg.dataset.busy = '1'; dlg.onclick = null;
+    dName.hidden = !name; dName.textContent = name || '';
+    dText.className = 'text' + (name ? '' : ' narr');
+    dText.textContent = prompt || '';
+    dMore.hidden = true;
+    dCh.innerHTML = opts.map((o,k)=>`<button class="choice" data-k="${k}"><span class="n">${k+1}</span><span>${esc(o)}</span></button>`).join('');
+    const pick = k => { dCh.innerHTML = ''; ui.keyFn = null; delete dlg.dataset.busy; SFX.ok(); closeDlg(); res(k); };
+    dCh.querySelectorAll('.choice').forEach(b=>b.onclick = ev => { ev.stopPropagation(); pick(+b.dataset.k); });
+    ui.keyFn = e => { const k = parseInt(e.key,10)-1; if(k>=0 && k<opts.length) pick(k); };
+    setTimeout(()=>dCh.querySelector('.choice')?.focus({preventScroll:true}), 50);
+  });
+}
+const ovl = $('#ovl');
+function overlay(cls, html){ ovl.innerHTML = `<div class="ovl ${cls}">${html}</div>`; return ovl.firstElementChild; }
+function info(kicker, title, body, btn='Continuar'){
+  return new Promise(res=>{
+    ui.lock++;
+    const o = overlay('center', `<div class="card" role="dialog" aria-modal="true"><span class="k">${kicker}</span><h2>${title}</h2>${body}<button class="btn" id="okb">${btn}</button></div>`);
+    const b = o.querySelector('#okb'); b.focus({preventScroll:true});
+    b.onclick = () => { SFX.click(); ovl.innerHTML=''; ui.lock--; ui.keyFn=null; res(); };
+    ui.keyFn = e => { if(e.key==='Enter'||e.key===' '){ e.preventDefault(); b.click(); } };
+  });
+}
+function chapter(n, title){
+  return new Promise(res=>{
+    ui.lock++; SFX.chapter();
+    const o = overlay('chapter', `<div class="chap"><span class="n">${n ? 'CAPÍTULO '+n : 'DOMINGO'}</span><h1>${title}</h1></div>`);
+    let gone = false;
+    const end = () => { if(gone) return; gone = true; ovl.innerHTML=''; ui.lock--; ui.keyFn=null; res(); };
+    o.onclick = end; ui.keyFn = e => { if(e.key===' '||e.key==='Enter') end(); };
+    setTimeout(end, 2600);
+  });
+}
+function toast(html){ const t = document.createElement('div'); t.className='toast'; t.innerHTML = html; document.body.appendChild(t); setTimeout(()=>t.remove(), 2400); }
+function hud(){ $('#hCap').textContent = st.cap ? `Capítulo ${st.cap} · ${CAPS[st.cap-1]}` : ''; }
+function addVoz(n){ st.voz = Math.min(100, st.voz + n); $('#hVoz').style.width = st.voz + '%'; }
+
+/* ---------- objetivos ---------- */
+let quest = null;
+function goTo(obj, targets){
+  return new Promise(res=>{
+    quest = {obj, res, targets: targets.map(t=>({...t, pos: t.pos || (t.npc ? npcPos(t.npc) : PLACES[t.at]), done:false}))};
+    quest.targets.forEach(t => t.marker = makeMarker(t.pos, t.prop));
+    updateObj();
+  });
+}
+function updateObj(){
+  if(!quest){ $('#hObj').textContent = ''; return; }
+  const n = quest.targets.length, d = quest.targets.filter(t=>t.done).length;
+  $('#hObj').textContent = n > 1 ? `${quest.obj} (${d}/${n})` : quest.obj;
+}
+async function arrive(t){
+  ui.lock++;
+  scene.remove(t.marker);
+  if(t.npc) lookAtPlayer(t.npc);
+  ui.lock--;
+  if(t.run) await t.run();
+  t.done = true; updateObj();
+  if(quest && quest.targets.every(x=>x.done)){ const r = quest.res; quest = null; updateObj(); r(); }
+}
+
+/* =========================================================
+   HISTÓRIA
+   ========================================================= */
+async function cap1(){
+  st.cap = 1; hud();
+  await chapter(1, CAPS[0]);
+  const p = await choose(PERFIS.map(x=>x.t), null, `${N()}, 16 anos. Onde você mora?`);
+  st.perfil = p;
+  await say(null, P().intro);
+  const temas = Object.keys(TEMAS);
+  const t = await choose(temas.map(k=>TEMAS[k].nome), null, 'No dia a dia, o que mais te incomoda?');
+  st.tema = temas[t];
+  lookAtPlayer('mae');
+  await say('Mãe', `Vai sair, ${N()}? Volta antes de escurecer, viu?`);
+  await goTo(`Vá até ${T().lugarNome}`, [{at:T().alvo, r:3.2, run: async()=>{
+    await say(null, T().problema(P().lugar));
+    const c = await choose(['Reclamar no grupo da turma','Gravar um vídeo mostrando o problema','Deixar pra lá. Sempre foi assim.'], null, 'Você está de saco cheio. O que faz?');
+    st.ch.c1 = c; rec(1, ['Reclamou no grupo da turma','Gravou um vídeo do problema','Deixou pra lá'][c]);
+    await say(null, [
+      'Em dez minutos, 34 mensagens. Todo mundo concorda que é um absurdo. Ninguém sabe a quem reclamar. Alguém manda um meme e o assunto morre.',
+      'O vídeo chega a 1.200 visualizações. O comentário mais curtido pergunta: "mas isso é culpa de quem?". Você não sabe responder.',
+      'Você deixa pra lá. Mas o problema continua no mesmo lugar, e uma colega da sala solta: "até quando?"'][c]);
+    addVoz(12);
+  }}]);
+  return cap2();
+}
+
+async function cap2(){
+  st.cap = 2; hud();
+  await chapter(2, CAPS[1]);
+  await say(null, 'Domingo. Sua família foi pra praça, e seu primo Léo está lá, grudado no celular.');
+  await goTo('Encontre seu primo Léo na praça', [{npc:'leo', r:2.6, run: async()=>{
+    await say(N(), `Léo, você viu ${T().nome==='Escola'?'o que tá acontecendo na minha escola':'como tá '+T().lugarNome}?`);
+    await say('Léo', 'Política é tudo igual. Votar não muda nada. Eu nem voto mais, só justifico.');
+    const c = await choose(['Concordar. Ele não está errado.','Perguntar: "Então por que em outros lugares é diferente?"','Ficar na sua e pesquisar mais tarde.'], 'Léo');
+    st.ch.c2 = c; rec(2, ['Concordou com o primo','Questionou o primo','Foi pesquisar por conta própria'][c]);
+    if(c===0){ await say(null, `Você concorda e o assunto acaba. Uma semana depois chega a notícia: ${PIORA[st.tema]}.`); await say(null, 'Alguém tomou essa decisão. Fica uma pergunta na sua cabeça: quem?'); }
+    if(c===1){ await say('Léo', 'Ah, sei lá... lá eles têm dinheiro.'); await say('Mãe', 'E quem decide pra onde vai o dinheiro, Léo?'); await say(null, 'Ninguém na praça sabe responder.'); }
+    if(c===2){ await say(null, 'À noite você pesquisa. Acha um vídeo de 40 minutos, três posts que se contradizem e um site cheio de anúncios.'); await say(null, 'Mas uma coisa fica clara: alguém decide sobre isso, e essa pessoa tem nome.'); }
+    addVoz(12);
+  }}]);
+  return cap3();
+}
+
+async function cap3(){
+  st.cap = 3; hud();
+  await chapter(3, CAPS[2]);
+  await goTo('Descubra quem decide: vá até a Câmara Municipal', [{npc:'socorro', r:2.8, run: async()=>{
+    await say('Dona Socorro', 'Bom dia! Sou servidora aqui da Câmara. Posso ajudar?');
+    await say(N(), `Quero entender quem decide sobre ${T().nome.toLowerCase()} aqui.`);
+    await say('Dona Socorro', T().quem);
+    const c = await choose(['Dá pra assistir a uma sessão?','Onde vejo o que cada vereador propõe?','Quem decide o quê, afinal?'], 'Dona Socorro');
+    st.ch.c3 = c; rec(3, ['Assistiu a uma sessão da Câmara','Pesquisou os projetos dos vereadores','Entendeu quem decide o quê'][c]);
+    await say('Dona Socorro', [
+      'Pode, a sessão é aberta ao público. Hoje tem sete pessoas na plateia, contando com você. Tem projeto que é votado em três minutos.',
+      `No site da Câmara tem a lista de vereadores, os projetos de cada um e quanto a cidade gastou com ${T().nome.toLowerCase()}.`,
+      'Pensa em três caixas: Município, Estado e União. Cada um cuida de uma parte.'][c]);
+    await say('Dona Socorro', 'Prefeito, vereador, governador, deputado, senador, presidente: todo mundo chega a esses cargos do mesmo jeito. Pelo voto.');
+    await say('Dona Socorro', 'Em cidade pequena, tem vereador que se elege com algumas centenas de votos. Às vezes é menos gente do que estuda na sua escola.');
+    await info('Aconteceu de verdade', T().exTitulo, `<p>${T().exemplo}</p><p class="note">Decisões de pessoas eleitas mudam a vida de milhões. Alguém escolheu quem ia decidir.</p>`);
+    addVoz(16);
+  }}]);
+  return cap4();
+}
+
+async function cap4(){
+  st.cap = 4; hud();
+  await chapter(4, CAPS[3]);
+  await goTo('Fale com a Bia na frente da escola', [{npc:'bia', r:2.6, run: async()=>{
+    await say(null, `Você junta as peças: o problema tem responsável, quem decide foi eleito, e quem elege é quem vota.`);
+    await say('Bia', `E aí, ${N()}! Já tirou seu título?`);
+    const c = await choose(['Ainda não. Quero tirar.','Ainda não sei se quero.'], 'Bia');
+    rec(4, c===0 ? 'Decidiu tirar o título' : 'Teve dúvida antes de decidir');
+    if(c===1) await say('Bia', 'Tirar o título não te obriga a votar antes dos 18. Mas o cadastro fecha 150 dias antes da eleição. Se perder o prazo, fica de fora dessa.');
+    await say('Bia', 'Junta os documentos, tira a selfie com o documento e vai no cartório eleitoral. É de graça!');
+  }}]);
+  await goTo('Junte o que precisa', [
+    {at:'casa', r:2.4, prop:'rg', run: async()=>{ SFX.pick(); toast('Pegou: <b>documento oficial com foto</b>'); }},
+    {at:'correio', r:2.2, prop:'carta', run: async()=>{ SFX.pick(); toast('Pegou: <b>comprovante de residência</b>'); }},
+    {at:'selfie', r:2.4, prop:'camera', run: async()=>{ SFX.shutter(); const f=document.createElement('div'); f.className='flash'; document.body.appendChild(f); setTimeout(()=>f.remove(),600); await sleep(350); SFX.pick(); toast('Feita: <b>selfie com o documento</b>'); }}
+  ]);
+  addVoz(10);
+  await goTo('Leve tudo ao cartório eleitoral', [{npc:'atendente', r:2.8, run: async()=>{
+    await say('Atendente', 'Bom dia! Primeiro título? Vou te mostrar o caminho todo.');
+    await info('Cartório eleitoral', 'Passo a passo do título', `<ul class="list">${PASSOS.map(p=>`<li>${p}</li>`).join('')}</ul><p class="note">Regras podem mudar. Confira sempre em tse.jus.br.</p>`, 'Entendi');
+    await say('Atendente', 'Pedido feito! Acompanhe pelo protocolo. Quando sair, baixa o e-Título no celular.');
+    SFX.win(); toast('Pedido do <b>título</b> feito');
+    addVoz(10);
+  }}]);
+  await say(null, 'Na volta, a praça está cheia de gente dando opinião sobre título. Hora de checar o que é verdade.');
+  await goTo('Cheque o que estão dizendo na praça', BOATOS.map(b=>({npc:b.npc, r:2.5, run: async()=>{
+    const nome = NPCS[b.npc].userData.name;
+    await say(nome, b.q);
+    const c = await choose(['É verdade','É boato'], nome);
+    const ok = (c===0) === b.v; st.checks++; if(ok) st.acertos++;
+    ok ? SFX.ok() : SFX.no();
+    await say(null, (ok ? 'Isso! ' : 'Não é bem assim. ') + b.a);
+  }})));
+  addVoz(10);
+  await goTo('Volte pra casa', [{at:'casa', r:2.6, run: async()=>{
+    SFX.vibra();
+    await say(null, 'Chegou a notificação: seu título está pronto! Você manda um print nos grupos.');
+    lookAtPlayer('mae');
+    await say('Mãe', 'Agora vota em quem a gente vota, viu?');
+    await say('Caio, no grupo', 'Eu vou anular. É protesto.');
+    const c = await choose(['Ouvir todo mundo e decidir por conta própria','Seguir a família, que conhece a cidade','Anular junto com o Caio']);
+    st.ch.p = c; rec(4, ['Decidiu o voto por conta própria','Ouviu a família','Pensou em anular'][c]);
+    await say(null, [
+      'Você responde que vai ouvir todo mundo, mas a decisão é sua. O voto é secreto: ninguém, nem a família, fica sabendo em quem você votou.',
+      'Conversar com a família ajuda: eles conhecem a cidade há mais tempo. Só lembre que o voto é secreto e é seu. Dá pra ouvir a família e comparar as propostas por conta própria.',
+      'Anular é um direito. Mas circula um boato: "se mais da metade anular, a eleição é cancelada". Não é verdade. Nulos e brancos não entram na conta dos votos válidos.'][c]);
+  }}]);
+  return cap5();
+}
+
+async function cap5(){
+  st.cap = 5; hud();
+  await chapter(5, CAPS[4]);
+  await say(null, 'Faltam dois meses pra eleição. Muito candidato, pouco tempo.');
+  await goTo('Pesquise os candidatos na biblioteca', [{npc:'biblio', r:2.8, run: async()=>{
+    await say('Bibliotecária', `Veio pesquisar candidato? Bom. Como você quer começar?`);
+    const c = await choose(['Assistir aos debates e comparar as respostas','Pesquisar no DivulgaCandContas, do TSE','Ver só os vídeos que os candidatos postam'], 'Bibliotecária');
+    st.ch.c5 = c; rec(5, ['Comparou candidatos nos debates','Pesquisou no DivulgaCandContas','Viu os vídeos dos candidatos'][c]);
+    await say(null, [
+      `No debate, dois candidatos falam de ${T().nome.toLowerCase()}. Um apresenta números e prazos; o outro passa o tempo atacando o adversário. Você anota as propostas pra conferir depois.`,
+      'No DivulgaCandContas você encontra quem está concorrendo, os bens declarados, de onde vem o dinheiro da campanha e, para prefeito, o plano de governo.',
+      'Os vídeos são bem editados, com música e sorriso. Mas são propaganda: cada candidato mostra só o que quer. Você resolve conferir outras fontes.'][c]);
+    addVoz(8);
+  }}]);
+  SFX.vibra();
+  await say(null, 'Na saída, o celular começa a vibrar sem parar. Mensagens espalhadas por todo canto do bairro.');
+  const spots = [V3(-30,0,7.5), V3(32,0,-7.5), V3(-6,0,28)];
+  await goTo('Cheque as mensagens suspeitas', MSGS.map((m,i)=>({pos:spots[i], r:2.3, prop:'fone', run: async()=>{
+    SFX.vibra();
+    await say(m.from, m.txt);
+    const c = await choose(['É verdade','É boato ou golpe'], m.from);
+    const ok = (c===0) === m.v; st.checks++; if(ok) st.acertos++;
+    ok ? SFX.ok() : SFX.no();
+    await say(null, (ok ? 'Boa! ' : 'Quase. ') + m.exp);
+  }})));
+  addVoz(10);
+  // dia da eleição
+  st.eleicao = true; scene.background.copy(SKY_ELEICAO); scene.fog.color.copy(SKY_ELEICAO); sun.color.set('#FFE2C2');
+  NPCS.homem.visible = true;
+  await chapter(0, 'Dia da eleição');
+  await info('Antes de sair', 'Checklist do dia', `<ul class="list">${DIA.map(d=>`<li>${d}</li>`).join('')}</ul>`, 'Bora votar');
+  await goTo('Vá votar na escola', [{at:'escola', r:3.2, run: async()=>{
+    lookAtPlayer('homem');
+    await say('Homem do adesivo', 'Ei! Te dou R$ 50 se você votar no meu candidato. Ninguém vai saber.');
+    const c = await choose(['Recusar e denunciar no app Pardal','Recusar e seguir em frente','Aceitar. São só R$ 50.'], 'Homem do adesivo');
+    st.ch.g = c; rec(5, ['Denunciou a compra de voto','Recusou a compra de voto','Aceitou o dinheiro'][c]);
+    await say(null, [
+      'Você recusa e registra a denúncia no Pardal, o aplicativo da Justiça Eleitoral para denunciar irregularidades na campanha.',
+      'Você recusa e segue. Se quiser, ainda dá pra denunciar depois pelo app Pardal, da Justiça Eleitoral.',
+      `Pela lei, comprar e vender voto é crime (art. 299 do Código Eleitoral), pra quem oferece e pra quem aceita. E esse voto ajuda a escolher quem cuida de ${T().nome.toLowerCase()} por quatro anos.`][c]);
+    NPCS.homem.visible = false;
+    await say(null, 'Na sala, você mostra o documento ao mesário e deixa o celular com ele. A colinha vai no bolso.');
+    await urna();
+    SFX.win(); addVoz(14);
+  }}]);
+  await say(null, 'Voto dado. Mas a parte que pouca gente faz começa agora: acompanhar quem foi eleito.');
+  const d = await choose(['Seguir os vereadores eleitos e ver como votam',`Mandar uma sugestão sobre ${T().nome.toLowerCase()} para a Câmara`,'Chamar a turma pra uma audiência pública'], null, 'O que você faz nos próximos meses?');
+  st.ch.d = d; rec(5, ['Vai acompanhar as votações','Vai mandar sugestões à Câmara','Vai levar a turma a uma audiência pública'][d]);
+  addVoz(100);
+  await sleep(600);
+  return final();
+}
+const CAPFN = [null, cap1, cap2, cap3, cap4, cap5];
+
+/* ---------- urna ---------- */
+function urna(){
+  return new Promise(res=>{
+    ui.lock++;
+    const u = {etapa:0, d:'', branco:false, fim:false};
+    const cargos = [{n:'VEREADOR', d:5},{n:'PREFEITO', d:2}];
+    const draw = () => {
+      const c = cargos[u.etapa];
+      let tela;
+      if(u.fim) tela = '<div style="margin:auto;font-size:46px;font-weight:800;letter-spacing:.06em">FIM</div>';
+      else {
+        const full = u.d.length===c.d;
+        tela = `<span>SEU VOTO PARA</span><span class="cargo">${c.n}</span>
+          ${u.branco ? '<span style="font-weight:800;font-size:18px;margin:8px 0">VOTO EM BRANCO</span>' : `<div class="digs">${Array.from({length:c.d},(_,k)=>`<span>${u.d[k]||''}</span>`).join('')}</div>`}
+          ${full && !u.branco ? '<span><b>Nome:</b> Candidatura de exemplo<br><b>Partido:</b> Fictício</span>' : ''}
+          <span class="inst">Aperte a tecla:<br>CONFIRMA para CONFIRMAR<br>CORRIGE para REINICIAR</span>`;
+      }
+      const o = overlay('center', `<div class="card" role="dialog" aria-modal="true"><span class="k">Cabine de votação</span><h2>Sua vez</h2>
+        <p>Digite qualquer número para simular. Nenhum candidato real aparece aqui.</p>
+        <div class="urna"><div class="tela" aria-live="polite">${tela}</div>
+          <div class="teclado">${[1,2,3,4,5,6,7,8,9].map(n=>`<button data-n="${n}">${n}</button>`).join('')}<button class="z" data-n="0">0</button></div>
+          <div class="acoes"><button class="branco" data-a="b">BRANCO</button><button class="corrige" data-a="c">CORRIGE</button><button class="confirma" data-a="ok">CONFIRMA</button></div>
+        </div>${u.fim ? '<button class="btn" id="sair">Sair da cabine</button>' : ''}</div>`);
+      o.querySelectorAll('.teclado button').forEach(b=>b.onclick=()=>{ if(u.fim||u.branco||u.d.length>=c.d) return; u.d += b.dataset.n; SFX.key(); draw(); });
+      o.querySelectorAll('.acoes button').forEach(b=>b.onclick=()=>{
+        if(u.fim) return; const a = b.dataset.a; SFX.key();
+        if(a==='c'){ u.d=''; u.branco=false; }
+        if(a==='b' && !u.d) u.branco = true;
+        if(a==='ok'){
+          if(!(u.branco || u.d.length===c.d)) return;
+          if(u.etapa===0){ u.etapa=1; u.d=''; u.branco=false; SFX.ok(); } else { u.fim=true; SFX.urnaFim(); }
+        }
+        draw();
+      });
+      const s = o.querySelector('#sair'); if(s) s.onclick = () => { ovl.innerHTML=''; ui.lock--; res(); };
+    };
+    draw();
+  });
+}
+
+/* ---------- final e cartão compartilhável ---------- */
+function loadImg(src){ return new Promise(r=>{ const i=new Image(); i.onload=()=>r(i); i.src=src; }); }
+function portrait(){
+  const r = new THREE.WebGLRenderer({alpha:true, antialias:true, preserveDrawingBuffer:true});
+  r.setSize(640,640,false);
+  const sc = new THREE.Scene();
+  sc.add(new THREE.HemisphereLight('#ffffff','#9aa3c7',1));
+  const dl = new THREE.DirectionalLight('#ffffff',.7); dl.position.set(3,5,6); sc.add(dl);
+  const ch = makeChar(st.skin); ch.rotation.y = .3;
+  ch.userData.armR.rotation.x = -2.75; ch.userData.armR.rotation.z = .25;
+  const card = new THREE.Group(); card.position.set(0,-.95,.15); ch.userData.armR.add(card);
+  box(.55,.38,.04,'#2F4BFF',0,0,0,card);
+  sc.add(ch);
+  const cam = new THREE.PerspectiveCamera(30,1,.1,50); cam.position.set(0,1.6,5.9); cam.lookAt(0,1.5,0);
+  r.render(sc, cam);
+  const url = r.domElement.toDataURL('image/png'); r.dispose();
+  return loadImg(url);
+}
+async function makeCard(){
+  try{ await Promise.race([Promise.all([document.fonts.load('120px Anton'), document.fonts.load('700 40px Outfit')]), sleep(1500)]); }catch(e){}
+  const W=1080, H=1350, cv=document.createElement('canvas'); cv.width=W; cv.height=H; const x=cv.getContext('2d');
+  x.fillStyle='#2F4BFF'; x.fillRect(0,0,W,H);
+  x.save(); x.translate(W/2, 640); x.fillStyle='#3D58FF';
+  for(let i=0;i<20;i++){ x.beginPath(); x.moveTo(0,0); const a=i*Math.PI/10; x.arc(0,0,1600,a,a+Math.PI/20); x.closePath(); x.fill(); }
+  x.restore();
+  x.textAlign='center'; x.fillStyle='#FFFFFF'; x.font='124px Anton, Impact, sans-serif';
+  x.fillText('MEU PRIMEIRO VOTO', W/2, 196);
+  const w = x.measureText('CONSCIENTE').width;
+  x.fillStyle='#E6FF3B'; x.fillRect(W/2-w/2-26, 222, w+52, 136);
+  x.fillStyle='#111216'; x.fillText('CONSCIENTE', W/2, 336);
+  const img = await portrait(); x.drawImage(img, W/2-330, 360, 660, 660);
+  x.fillStyle='#FFFFFF'; const bx=64, by=1000, bw=W-128, bh=250;
+  x.beginPath(); x.roundRect ? x.roundRect(bx,by,bw,bh,28) : x.rect(bx,by,bw,bh); x.fill();
+  x.textAlign='left'; x.fillStyle='#111216'; x.font='800 46px Outfit, sans-serif';
+  x.fillText(`${N()} · tema: ${T().nome.toLowerCase()}`, bx+40, by+72);
+  x.font='500 33px Outfit, sans-serif'; x.fillStyle='#2F4BFF';
+  const linhas = [
+    `✓  Chequei ${st.acertos} de ${st.checks} boatos e golpes`,
+    st.ch.p===0 ? '✓  Decidi meu voto por conta própria' : '✓  Ouvi quem confio e comparei propostas',
+    ['✓  Vou acompanhar como os eleitos votam','✓  Vou mandar sugestões para a Câmara','✓  Vou levar a turma a uma audiência'][st.ch.d||0]
+  ];
+  linhas.forEach((l,i)=>x.fillText(l, bx+40, by+130+i*44));
+  x.textAlign='center'; x.fillStyle='#FFFFFF'; x.font='600 30px Outfit, sans-serif';
+  x.fillText('@projetomidiando  ·  Antes do Título', W/2, 1305);
+  return cv.toDataURL('image/png');
+}
+async function final(){
+  ui.lock++;
+  $('#hud').hidden = true; $('#joy').hidden = true; $('#kbd').hidden = true;
+  const url = await makeCard();
+  const caps = ['','1','2','3','4','5'];
+  overlay('final', `<div class="fin">
+    <img src="${url}" alt="Cartão Meu primeiro voto consciente de ${esc(N())}">
+    <p class="note" style="text-align:center">Toque e segure a imagem para salvar e postar nos stories.</p>
+    <div class="row"><button class="btn limeb" id="copy">Copiar legenda</button><button class="btn ghost" id="again">Jogar de novo</button></div>
+    <div class="panel"><h2>Suas escolhas</h2>
+      <ul class="recap">${st.rec.map(([c,t])=>`<li><span class="c">${caps[c]}</span><span>${esc(t)}</span></li>`).join('')}</ul>
+      <div class="aula"><b>Pra conversar em sala</b><p>O que você respondeu quando o Léo disse que política é tudo igual? Por quê? Alguém da turma escolheu diferente e chegou ao mesmo lugar?</p></div>
+    </div>
+    <p class="note" style="text-align:center">Protótipo Midiando · UFC. Regras eleitorais: confira em tse.jus.br.</p>
+  </div>`);
+  SFX.win();
+  $('#copy').onclick = async () => {
+    const t = `Meu primeiro voto consciente 🗳️ No jogo Antes do Título eu escolhi o tema ${T().nome} e chequei ${st.acertos} de ${st.checks} boatos. Já tirou o seu título? @projetomidiando`;
+    try{ await navigator.clipboard.writeText(t); toast('Legenda copiada'); }catch(e){ toast(esc(t)); }
+  };
+  $('#again').onclick = restart;
+}
+function restart(){
+  const skin = {...st.skin}, nome = st.nome;
+  st = st0(); st.skin = skin; st.nome = nome;
+  quest = null; ui.lock = 0; ui.keyFn = null;
+  scene.background.copy(SKY_DAY); scene.fog.color.copy(SKY_DAY); sun.color.set('#fff6e8');
+  NPCS.homem.visible = false;
+  player.position.set(-20,0,8.6); player.rotation.y = Math.PI;
+  $('#hVoz').style.width = '0%'; updateObj();
+  ovl.innerHTML = ''; SFX.click();
+  customScreen();
+}
+
+/* =========================================================
+   CONTROLES
+   ========================================================= */
+const keys = {};
+addEventListener('keydown', e => {
+  if(ui.keyFn){ ui.keyFn(e); return; }
+  if(e.target.tagName==='INPUT') return;
+  keys[e.key.toLowerCase()] = true;
+});
+addEventListener('keyup', e => { keys[e.key.toLowerCase()] = false; });
+const joy = $('#joy'), knob = $('#knob'); const jv = {x:0, y:0}; let jid = null, jc = null;
+joy.addEventListener('pointerdown', e => { jid = e.pointerId; joy.setPointerCapture(jid); const r = joy.getBoundingClientRect(); jc = {x:r.left+r.width/2, y:r.top+r.height/2}; jmove(e); });
+joy.addEventListener('pointermove', e => { if(e.pointerId===jid) jmove(e); });
+const jend = e => { if(e.pointerId!==jid) return; jid=null; jv.x=jv.y=0; knob.style.transform=''; };
+joy.addEventListener('pointerup', jend); joy.addEventListener('pointercancel', jend);
+function jmove(e){
+  let dx = e.clientX-jc.x, dy = e.clientY-jc.y; const d = Math.hypot(dx,dy), m = 46;
+  if(d > m){ dx = dx/d*m; dy = dy/d*m; }
+  knob.style.transform = `translate(${dx}px,${dy}px)`; jv.x = dx/m; jv.y = dy/m;
+}
+
+/* =========================================================
+   LOOP
+   ========================================================= */
+let mode = 'title', last = performance.now(), stepT = 0, t = 0;
+const camTarget = V3(0,0,0);
+function resize(){ renderer.setSize(innerWidth, innerHeight, false); camera.aspect = innerWidth/innerHeight; camera.updateProjectionMatrix(); }
+addEventListener('resize', resize);
+
+function frame(nowMs){
+  const dt = Math.min(.05, (nowMs-last)/1000); last = nowMs; t += dt;
+  CLOUDS.forEach((c,i)=>{ c.position.x += dt*(.6+i*.08); if(c.position.x > 80) c.position.x = -80; });
+  Object.values(NPCS).forEach(n=>animChar(n,false,dt));
+
+  if(mode==='title'){
+    const a = t*.06; camera.position.set(Math.sin(a)*58, 34, Math.cos(a)*58); camera.lookAt(0,0,-4);
+  } else if(mode==='custom'){
+    player.rotation.y += dt*.7; animChar(player,false,dt);
+    camera.position.lerp(V3(player.position.x, 2.6, player.position.z-11), 1-Math.exp(-dt*6)); camera.lookAt(player.position.x, 1.2, player.position.z);
+    const sheetH = (document.querySelector('.sheetbox')?.offsetHeight || 0);
+    camera.setViewOffset(innerWidth, innerHeight, 0, sheetH*.45, innerWidth, innerHeight);
+  } else if(player){
+    let mx = 0, mz = 0;
+    if(!ui.lock){
+      if(keys['a']||keys['arrowleft']) mx -= 1; if(keys['d']||keys['arrowright']) mx += 1;
+      if(keys['w']||keys['arrowup']) mz -= 1; if(keys['s']||keys['arrowdown']) mz += 1;
+      mx += jv.x; mz += jv.y;
+    }
+    const len = Math.hypot(mx,mz), moving = len > .12;
+    if(moving){
+      const sp = 8.5 * Math.min(1,len) / Math.max(1,len);
+      player.position.x += mx*sp*dt; player.position.z += mz*sp*dt;
+      const target = Math.atan2(mx, mz); let d = target - player.rotation.y;
+      d = Math.atan2(Math.sin(d), Math.cos(d)); player.rotation.y += d * Math.min(1, dt*12);
+      stepT -= dt; if(stepT <= 0){ SFX.step(); stepT = .3; }
+      const p = player.position, R = .45;
+      for(const o of OBS){
+        if(p.x>o.minX-R && p.x<o.maxX+R && p.z>o.minZ-R && p.z<o.maxZ+R){
+          const dl=p.x-(o.minX-R), dr=(o.maxX+R)-p.x, du=p.z-(o.minZ-R), dd=(o.maxZ+R)-p.z, m=Math.min(dl,dr,du,dd);
+          if(m===dl) p.x=o.minX-R; else if(m===dr) p.x=o.maxX+R; else if(m===du) p.z=o.minZ-R; else p.z=o.maxZ+R;
+        }
+      }
+      p.x = Math.max(-60, Math.min(60, p.x)); p.z = Math.max(-58, Math.min(58, p.z));
+    }
+    animChar(player, moving, dt);
+    const k = camera.aspect < 1 ? 1.4 : 1; camTarget.set(player.position.x, 19*k, player.position.z+10.5*k);
+    camera.position.lerp(camTarget, 1-Math.exp(-dt*5));
+    camera.lookAt(player.position.x, 1, player.position.z-1);
+
+    // NPCs olham para quem chega perto
+    Object.values(NPCS).forEach(n=>{
+      if(!n.visible) return;
+      const dx = player.position.x-n.position.x, dz = player.position.z-n.position.z;
+      const want = (dx*dx+dz*dz < 30) ? Math.atan2(dx,dz) : n.userData.baseRot;
+      let d = want - n.rotation.y; d = Math.atan2(Math.sin(d),Math.cos(d)); n.rotation.y += d*Math.min(1,dt*4);
+    });
+
+    // objetivos
+    guide.visible = false;
+    if(quest){
+      let best = null, bd = 1e9;
+      for(const q of quest.targets){
+        if(q.done) continue;
+        const m = q.marker; m.userData.gem.rotation.y += dt*2; m.userData.gem.position.y = 3.6 + Math.sin(t*3)*.2;
+        const s = 1 + Math.sin(t*4)*.08; m.userData.ring.scale.set(s,1,s);
+        if(m.userData.prop){ m.userData.prop.rotation.y += dt*1.6; m.userData.prop.position.y = 1.3 + Math.sin(t*2.5)*.12; }
+        const d = Math.hypot(q.pos.x-player.position.x, q.pos.z-player.position.z);
+        if(d < bd){ bd = d; best = q; }
+        if(!ui.lock && !q.busy && d < q.r){ q.busy = true; arrive(q); }
+      }
+      if(best && bd > 4.5 && !ui.lock){
+        const a = Math.atan2(best.pos.x-player.position.x, best.pos.z-player.position.z);
+        guide.visible = true; guide.position.set(player.position.x+Math.sin(a)*1.6, .25, player.position.z+Math.cos(a)*1.6); guide.rotation.y = a;
+      }
+    }
+  }
+  renderer.render(scene, camera);
+  requestAnimationFrame(frame);
+}
+
+/* =========================================================
+   TELAS: título e criação de personagem
+   ========================================================= */
+function titleScreen(){
+  mode = 'title';
+  const o = overlay('title', `<div class="titlebox">
+    <a class="kick" href="../" style="text-decoration:none">MIDIANDO JOGOS</a>
+    <h1>Antes do<br><span class="lime">Título</span></h1>
+    <p>Uma aventura sobre descobrir que a sua voz tem peso. Cinco capítulos, uns 12 minutos. O jogo não diz em quem votar.</p>
+    <button class="btn limeb" id="play">Jogar</button>
+    <p class="note">Melhor com som ligado. No celular, use o joystick; no computador, WASD ou setas.</p>
+  </div>`);
+  o.querySelector('#play').onclick = () => { audioInit(); SFX.click(); customScreen(); };
+}
+function customScreen(){
+  mode = 'custom';
+  buildPlayer();
+  camera.position.set(player.position.x, 2.6, player.position.z-11);
+  const sw = (key, list) => list.map(c=>`<button data-o="${key}" data-v="${c}" style="background:${c}" aria-label="${c}" aria-pressed="${st.skin[key]===c}"></button>`).join('');
+  const tx = (key, list) => list.map(([v,l])=>`<button data-o="${key}" data-v="${v}" aria-pressed="${st.skin[key]===v}">${l}</button>`).join('');
+  const o = overlay('sheet', `<div class="sheetbox" role="dialog" aria-label="Criar personagem">
+    <h2>Crie seu personagem</h2>
+    <div class="field"><label for="nome">Nome</label><input id="nome" maxlength="16" autocomplete="off" placeholder="Ari" value="${esc(st.nome)}"></div>
+    <div class="opt"><span class="lab">Pele</span><div class="sw">${sw('pele',OPT.pele)}</div></div>
+    <div class="opt"><span class="lab">Cabelo</span><div class="tx">${tx('cabelo',OPT.cabelo)}</div><div class="sw">${sw('corCabelo',OPT.corCabelo)}</div></div>
+    <div class="opt"><span class="lab">Camiseta</span><div class="sw">${sw('camisa',OPT.camisa)}</div></div>
+    <div class="opt"><span class="lab">Calça</span><div class="sw">${sw('calca',OPT.calca)}</div></div>
+    <div class="opt"><span class="lab">Acessório</span><div class="tx">${tx('acess',OPT.acess)}</div></div>
+    <button class="btn" id="pronto">Começar a história</button>
+  </div>`);
+  o.querySelectorAll('[data-o]').forEach(b=>b.onclick=()=>{
+    st.skin[b.dataset.o] = b.dataset.v; SFX.click(); buildPlayer();
+    o.querySelectorAll(`[data-o="${b.dataset.o}"]`).forEach(x=>x.setAttribute('aria-pressed', x===b));
+  });
+  o.querySelector('#pronto').onclick = () => {
+    st.nome = (o.querySelector('#nome').value || '').trim().slice(0,16) || 'Ari';
+    VOICE[st.nome] = 330;
+    SFX.click(); ovl.innerHTML = '';
+    startGame(1);
+  };
+}
+function startGame(cap){
+  mode = 'play';
+  camera.clearViewOffset();
+  player.rotation.y = Math.PI;
+  $('#hud').hidden = false;
+  const coarse = matchMedia('(pointer:coarse)').matches;
+  $('#joy').hidden = !coarse; $('#kbd').hidden = coarse;
+  addVoz(0);
+  CAPFN[cap]();
+}
+
+/* =========================================================
+   INÍCIO
+   ========================================================= */
+async function boot(data){
+  try{ await Promise.race([document.fonts.load('64px Anton'), sleep(1500)]); }catch(e){}
+  buildWorld(); spawnNPCs(); resize();
+  setSound(true);
+  $('#snd').onclick = () => { audioInit(); setSound(!AU.on); };
+  $('#loading').remove();
+  requestAnimationFrame(frame);
+  const saved = data && data.st;
+  if(saved && saved.cap){
+    st = Object.assign(st0(), saved, {rec:saved.rec||[]});
+    buildPlayer(); VOICE[st.nome] = 330;
+    if(st.eleicao){ scene.background.copy(SKY_ELEICAO); NPCS.homem.visible = true; }
+    $('#hVoz').style.width = st.voz + '%';
+    startGame(st.cap);
+  } else titleScreen();
+}
+window.claude?.hot?.snapshot?.(() => ({st}));
+window.claude?.hot?.ready ? window.claude.hot.ready(boot) : boot(window.claude?.hot?.data ?? {});
+})();
+</script>

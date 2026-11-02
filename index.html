@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Midiando Jogos</title>
+<meta name="description" content="Jogos de educação midiática do projeto de extensão Midiando, do curso de Jornalismo da UFC.">
+<meta property="og:title" content="Midiando Jogos">
+<meta property="og:description" content="Jogos de educação midiática do projeto de extensão Midiando, do curso de Jornalismo da UFC.">
+<meta property="og:type" content="website">
+<meta name="theme-color" content="#2F4BFF">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%232F4BFF'/%3E%3Crect x='12' y='34' width='40' height='16' fill='%23E6FF3B'/%3E%3Cpath d='M16 30V14h7l9 11 9-11h7v16h-7v-7l-9 10-9-10v7z' fill='%23fff'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Anton&family=Outfit:wght@400;500;600;700;800&display=swap">
+<style>
+/* Layout: faixa azul com raios (como os posts do @projetomidiando), dois cartões de jogo lado a lado, bloco curto para professores. */
+:root{
+  --blue:#2F4BFF; --blue-2:#3D58FF; --lime:#E6FF3B; --orange:#FF5A1F; --green:#BFFF8A;
+  --ink:#111216; --ink-2:#5A5D6B; --line:#DCDEE6; --paper:#FFFFFF; --bg:#F4F5F0;
+  --f-display:"Anton","Bebas Neue",Impact,"Arial Narrow",sans-serif;
+  --f-body:"Outfit",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --r:16px;
+  color-scheme:light;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;font-family:var(--f-body);font-size:17px;line-height:1.5;color:var(--ink);background:var(--bg)}
+a{color:inherit}
+a:focus-visible{outline:3px solid var(--blue);outline-offset:3px}
+@media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
+h1,h2,h3{margin:0;font-family:var(--f-display);font-weight:400;text-transform:uppercase;line-height:.95;letter-spacing:.005em;text-wrap:balance}
+p{margin:0}
+.wrap{max-width:1080px;margin:0 auto;padding-left:max(20px,env(safe-area-inset-left,0px));padding-right:max(20px,env(safe-area-inset-right,0px))}
+.lime{background:var(--lime);color:var(--ink);padding:0 .14em;box-decoration-break:clone;-webkit-box-decoration-break:clone}
+
+.hero{background:repeating-conic-gradient(from 0deg at 70% 120%,var(--blue) 0 7deg,var(--blue-2) 7deg 14deg);color:#fff}
+.hero .wrap{padding-block:calc(28px + env(safe-area-inset-top,0px)) 72px;display:flex;flex-direction:column;gap:22px}
+.top{display:flex;justify-content:space-between;align-items:center;gap:12px;font-weight:600;font-size:14px}
+.top .mark{font-family:var(--f-display);font-size:20px;letter-spacing:.05em}
+.top a{text-decoration:none;opacity:.9}
+.top a:hover{opacity:1;text-decoration:underline}
+.hero h1{font-size:clamp(64px,15vw,150px);margin-top:28px;line-height:1}
+.hero h1 .lime{display:inline-block;line-height:1.06;padding:0 .1em;margin-top:.04em}
+.hero p{font-size:clamp(17px,2.2vw,21px);max-width:44ch;opacity:.95}
+
+.games{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:20px;margin-top:-40px}
+.game{background:var(--paper);border-radius:var(--r);overflow:hidden;display:flex;flex-direction:column;text-decoration:none;box-shadow:0 10px 30px rgba(17,18,22,.08);transition:transform .2s}
+.game:hover{transform:translateY(-3px)}
+.game .art{aspect-ratio:16/9;line-height:0}
+.game .art svg{width:100%;height:100%;display:block}
+.game .body{padding:22px 22px 24px;display:flex;flex-direction:column;gap:12px;flex:1}
+.meta{display:flex;flex-wrap:wrap;gap:6px}
+.meta span{font-size:12.5px;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:3px 9px;border-radius:4px;background:var(--bg)}
+.game h2{font-size:clamp(36px,5vw,48px)}
+.game p{color:var(--ink-2)}
+.play{margin-top:auto;align-self:flex-start;display:inline-flex;align-items:center;gap:8px;background:var(--ink);color:#fff;border-radius:999px;padding:12px 22px;font-weight:700}
+.game:hover .play{background:var(--blue)}
+
+.aula{display:grid;grid-template-columns:1fr 2fr;gap:28px;padding-block:72px 56px;align-items:start}
+.aula h2{font-size:clamp(34px,5vw,52px)}
+.points{list-style:none;margin:0;padding:0;display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:20px;counter-reset:p}
+.points li{counter-increment:p;display:flex;flex-direction:column;gap:6px;min-width:0}
+.points li::before{content:counter(p);font-family:var(--f-display);font-size:34px;color:var(--blue);line-height:1}
+.points b{font-weight:700}
+.points span{color:var(--ink-2);font-size:16px}
+
+footer{border-top:1px solid var(--line)}
+footer .wrap{padding-block:24px calc(28px + env(safe-area-inset-bottom,0px));display:flex;flex-wrap:wrap;justify-content:space-between;gap:10px;font-size:14px;color:var(--ink-2)}
+footer a{font-weight:600;color:var(--ink)}
+
+@media (max-width:760px){
+  .games{grid-template-columns:1fr;margin-top:-32px}
+  .aula{grid-template-columns:1fr;padding-block:56px 40px}
+  .points{grid-template-columns:1fr}
+}
+</style>
+
+<header class="hero">
+  <div class="wrap">
+    <div class="top"><span class="mark">MIDIANDO</span><a href="https://www.instagram.com/projetomidiando/" target="_blank" rel="noopener">@projetomidiando</a></div>
+    <h1>Midiando <span class="lime">Jogos</span></h1>
+    <p>Jogos de educação midiática do projeto de extensão Midiando, do curso de Jornalismo da UFC. Para jogar no celular, na sala de aula ou no intervalo.</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="games" aria-label="Jogos">
+    <a class="game" href="quiz/">
+      <div class="art" aria-hidden="true">
+        <svg viewBox="0 0 480 270" preserveAspectRatio="xMidYMid slice"><rect width="480" height="270" fill="#E6FF3B"/><rect x="128" y="34" width="224" height="236" rx="14" fill="#fff"/><circle cx="156" cy="62" r="13" fill="#FFD2BF"/><rect x="178" y="54" width="96" height="9" rx="4" fill="#111216"/><rect x="178" y="68" width="62" height="7" rx="3" fill="#B9BCC8"/><rect x="146" y="92" width="188" height="8" rx="4" fill="#111216"/><rect x="146" y="108" width="170" height="8" rx="4" fill="#111216"/><rect x="146" y="124" width="120" height="8" rx="4" fill="#111216"/><rect x="146" y="150" width="58" height="34" rx="8" fill="#BFFF8A"/><rect x="211" y="150" width="58" height="34" rx="8" fill="#FF5A1F"/><rect x="276" y="150" width="58" height="34" rx="8" fill="#2F4BFF"/><circle cx="372" cy="104" r="44" fill="none" stroke="#111216" stroke-width="12"/><path d="M403 136l38 38" stroke="#111216" stroke-width="14" stroke-linecap="round"/></svg>
+      </div>
+      <div class="body">
+        <div class="meta"><span>Quiz</span><span>4 min</span><span>Celular</span></div>
+        <h2>Quiz Midiando</h2>
+        <p>Posts, prints e notícias que circulam por aí. Abra uma pista, dê o veredito e descubra qual sinal entregava a fake.</p>
+        <span class="play">Jogar o quiz</span>
+      </div>
+    </a>
+    <a class="game" href="antes-do-titulo/">
+      <div class="art" aria-hidden="true">
+        <svg viewBox="0 0 480 270" preserveAspectRatio="xMidYMid slice"><rect width="480" height="270" fill="#2F4BFF"/><g fill="#3D58FF"><path d="M240 300 0 0h60z"/><path d="M240 300 140 0h60z"/><path d="M240 300 280 0h60z"/><path d="M240 300 420 0h60z"/></g><rect x="0" y="206" width="480" height="64" fill="#BFE89A"/><rect x="40" y="132" width="96" height="78" fill="#E8CCFF"/><rect x="34" y="122" width="108" height="14" fill="#111216"/><rect x="340" y="116" width="110" height="94" fill="#FF5A1F"/><rect x="334" y="106" width="122" height="14" fill="#fff"/><rect x="380" y="164" width="28" height="46" fill="#111216"/><rect x="226" y="40" width="28" height="170" fill="#E6FF3B" opacity=".55"/><path d="M240 30l14 14-14 14-14-14z" fill="#E6FF3B"/><circle cx="240" cy="150" r="20" fill="#B97A50"/><circle cx="240" cy="136" r="22" fill="#1B1410"/><rect x="222" y="168" width="36" height="34" rx="14" fill="#E6FF3B"/><rect x="226" y="198" width="11" height="20" rx="5" fill="#1F2433"/><rect x="243" y="198" width="11" height="20" rx="5" fill="#1F2433"/></svg>
+      </div>
+      <div class="body">
+        <div class="meta"><span>Aventura 3D</span><span>12 min</span><span>Com som</span></div>
+        <h2>Antes do Título</h2>
+        <p>Crie seu personagem, explore o bairro e descubra, em 5 capítulos, por que a sua voz pesa. O jogo não diz em quem votar.</p>
+        <span class="play">Jogar a aventura</span>
+      </div>
+    </a>
+  </section>
+
+  <section class="aula">
+    <h2>Na sala de aula</h2>
+    <ol class="points">
+      <li><b>Jogue junto</b><span>Projete na lousa ou deixe a turma jogar no celular. Não precisa instalar nada.</span></li>
+      <li><b>Discuta as escolhas</b><span>No final, cada jogo mostra um resumo do que a pessoa escolheu e uma pergunta para a conversa.</span></li>
+      <li><b>Compartilhe o resultado</b><span>Os cartões finais foram feitos para virar story e levar a conversa para fora da sala.</span></li>
+    </ol>
+  </section>
+</main>
+
+<footer>
+  <div class="wrap">
+    <span>Protótipos do Projeto Midiando · Curso de Jornalismo da Universidade Federal do Ceará</span>
+    <span>Regras eleitorais: confira sempre em <a href="https://www.tse.jus.br" target="_blank" rel="noopener">tse.jus.br</a></span>
+  </div>
+</footer>
+</html>
