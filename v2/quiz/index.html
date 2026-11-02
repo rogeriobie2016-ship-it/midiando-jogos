@@ -1,0 +1,396 @@
+<!doctype html>
+<html lang="pt-BR">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Esquadrão Checagem</title>
+<meta name="description" content="Quiz Midiando versão 2: monte seu ranger, derrote os monstros da desinformação e ganhe XP, combos e baús.">
+<meta property="og:title" content="Esquadrão Checagem · Quiz Midiando">
+<meta property="og:description" content="Derrote os monstros da desinformação checando posts, prints e notícias.">
+<meta name="theme-color" content="#0E1230">
+<link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%230E1230'/%3E%3Crect x='14' y='12' width='36' height='30' rx='10' fill='%232F4BFF'/%3E%3Crect x='18' y='22' width='28' height='10' fill='%23E6FF3B'/%3E%3Crect x='20' y='44' width='24' height='10' fill='%232F4BFF'/%3E%3C/svg%3E">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Press+Start+2P&family=Pixelify+Sans:wght@400;600;700&family=Outfit:wght@400;600;700&display=swap">
+<link rel="stylesheet" href="../esquadrao.css">
+<style>
+/* posts simulados: tela de celular clara dentro do estúdio escuro */
+.post{background:#fff;color:#111216;border-radius:14px;overflow:hidden;font-family:var(--f-read);font-size:15.5px;line-height:1.45}
+.phead{display:flex;align-items:center;gap:10px;padding:11px 12px}
+.av{width:32px;height:32px;border-radius:50%;display:grid;place-items:center;font-weight:700;font-size:12px;flex:none;color:#111216}
+.who{min-width:0;line-height:1.25}.who b{display:block;font-weight:700;font-size:14.5px}.who span{font-size:12.5px;color:#5A5D6B}
+.verified{display:inline-grid;place-items:center;width:14px;height:14px;border-radius:50%;background:#2F4BFF;color:#fff;font-size:9px;vertical-align:1px;margin-left:4px}
+.ptext{padding:0 12px 12px}
+.pimg{line-height:0}.pimg svg{width:100%;height:auto;display:block}
+.pfoot{padding:0 12px 12px;font-size:13px;color:#5A5D6B;display:flex;gap:14px}
+.zap{background:#ECF3E8}.zap .bubble{margin:0 12px 12px;background:#fff;border-radius:4px 12px 12px 12px;padding:8px 11px 6px}
+.zap .fwd{display:block;font-size:12px;color:#5A5D6B;font-style:italic;margin-bottom:3px}.zap .time{display:block;text-align:right;font-size:11px;color:#5A5D6B}
+.site .domain{padding:9px 12px;border-bottom:1px solid #DCDEE6;font-size:13px;color:#5A5D6B}.site .domain b{color:#111216}
+.site .shared{padding:10px 12px 0;font-size:12.5px;color:#5A5D6B}
+.site h3{font-family:var(--f-read);font-weight:700;font-size:19px;line-height:1.2;padding:10px 12px 4px;letter-spacing:-.01em}
+.site .date{padding:0 12px;font-size:13px;color:#5A5D6B}.site .lede{padding:8px 12px 14px}
+.quote{background:#111216;color:#fff;padding:24px 18px;font-family:var(--f-px);font-size:15px;line-height:1.5}
+.quote small{display:block;font-family:var(--f-read);font-size:14px;margin-top:10px;color:#E6FF3B}
+.skills{display:grid;grid-template-columns:repeat(3,1fr);gap:8px}
+.skill{background:var(--tile);border:2px solid var(--line);border-bottom-width:5px;border-radius:14px;padding:10px 6px 8px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:14px;line-height:1.15;text-align:center}
+.skill canvas{width:32px;height:40px}
+.skill.on{border-color:var(--lime);background:#2C3570;color:var(--lime)}
+.skill.key{border-color:var(--gold)}
+.skill[disabled]:not(.on){opacity:.35;cursor:not-allowed}
+.reveal{background:#2C3570;border-left:0;border-radius:12px;padding:12px 14px;font-family:var(--f-read);font-size:15.5px;line-height:1.5}
+.reveal .label{color:var(--lime);display:block;margin-bottom:4px}
+.title{display:flex;flex-direction:column;align-items:center;gap:20px;text-align:center;padding-top:10px}
+.logo{font-family:var(--f-px);line-height:1.15;text-shadow:4px 4px 0 #000}
+.logo .a{display:block;font-size:clamp(26px,8.4vw,40px);color:var(--lime);-webkit-text-stroke:0}
+.logo .b{display:block;font-size:clamp(18px,5.6vw,26px);color:#fff;margin-top:8px}
+.lineup{display:flex;justify-content:center;align-items:flex-end;gap:6px;margin-top:6px}
+.lineup .px{animation:bob 1.2s steps(2) infinite}
+.lineup .px:nth-child(2n){animation-delay:.3s}
+.pick{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}
+.pick button{background:var(--tile);border:2px solid var(--line);border-bottom-width:5px;border-radius:14px;padding:12px 6px;display:flex;flex-direction:column;align-items:center;gap:8px;font-size:15px}
+.pick button[aria-pressed="true"]{border-color:var(--lime);background:#2C3570}
+.pick button.locked{opacity:.4}
+.topbar{display:flex;align-items:center;justify-content:space-between;gap:10px;font-family:var(--f-px);font-size:12px}
+.topbar .stat{display:flex;align-items:center;gap:6px}
+.topbar .stat svg{width:20px;height:20px}
+</style>
+
+<div class="app" id="app"></div>
+<div id="bottom"></div>
+
+<script src="../esquadrao.js"></script>
+<script>
+(() => {
+const {$, esc, sleep, store, audio:A, ICON} = ESQ;
+const app = $('#app'), bottom = $('#bottom');
+
+/* posts fictícios (mesmos da versão 1) */
+const IMG = {
+  enchente:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#a9b9c2"/><rect x="18" y="52" width="70" height="78" fill="#F4F5F0"/><path d="M12 56 53 24 94 56Z" fill="#c7cdd6"/><rect x="40" y="70" width="20" height="18" fill="#7f95a3"/><rect x="120" y="40" width="88" height="90" fill="#e3d7c3"/><rect x="134" y="56" width="20" height="18" fill="#7f95a3"/><rect x="172" y="56" width="20" height="18" fill="#7f95a3"/><rect x="236" y="62" width="66" height="68" fill="#d2c6d9"/><path d="M0 112q20-10 40 0t40 0 40 0 40 0 40 0 40 0 40 0 40 0V180H0Z" fill="#6f8577"/></svg>`,
+  cha:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#BFFF8A"/><path d="M110 70h90v52a30 30 0 0 1-30 30h-30a30 30 0 0 1-30-30Z" fill="#fff"/><path d="M114 84h82" stroke="#9c7b3a" stroke-width="10"/><circle cx="262" cy="128" r="26" fill="#E6FF3B"/><text x="16" y="168" font-family="Anton,Impact,sans-serif" font-size="24" fill="#111216">CURA EM 24H?!</text></svg>`,
+  grafico:`<svg viewBox="0 0 320 180"><rect width="320" height="180" fill="#F4F5F0"/><text x="18" y="40" font-family="Impact,sans-serif" font-size="28" fill="#111216">90% NÃO VÃO VOTAR</text><rect x="40" y="58" width="80" height="104" fill="#FF5A1F"/><rect x="170" y="148" width="80" height="14" fill="#2F4BFF"/><path d="M24 162h272" stroke="#111216" stroke-width="2"/></svg>`
+};
+const Q = [
+  {tipo:'zap', autor:'Tia Neide', ini:'TN', cor:'#FFD2BF', meta:'Encaminhada com frequência',
+   texto:'⚠️ URGENTE ⚠️ A partir de segunda-feira quem não fez a biometria vai ter o CPF BLOQUEADO!!! O governo não está avisando na TV. Repassa pra todo mundo antes que apaguem essa mensagem!!',
+   pistas:{quem:'Sua tia recebeu num grupo e repassou. Ela não sabe quem escreveu primeiro. O aviso "Encaminhada com frequência" mostra que a mensagem já passou por muitas conversas.', quando:'Não tem data. "A partir de segunda" pode ser qualquer segunda, de qualquer ano.', origem:'Nenhum link, nenhum órgão citado. O site do TSE não tem esse aviso, e o CPF é da Receita Federal, não da Justiça Eleitoral.'},
+   chave:'origem', resposta:'falso', sinal:'Urgência, nenhuma fonte e pedido para repassar. "Antes que apaguem" é um gatilho clássico para você compartilhar sem pensar.', dica:'Procure o assunto no site oficial (tse.jus.br) ou numa agência de checagem antes de repassar.'},
+  {tipo:'insta', autor:'noticiasdobairro.agora', ini:'NB', cor:'#CFE3FF', meta:'Perfil criado há 3 semanas · 214 seguidores', img:'enchente',
+   texto:'Olha como ficou a avenida AGORA depois da chuva de ontem à noite 😱 A prefeitura abandonou a gente!',
+   pistas:{quem:'Perfil novo, sem nome de responsável e com poucas publicações. Isso sozinho não prova mentira, mas pede cuidado.', quando:'Postado hoje às 7h12. A legenda diz "agora", mas a foto pode ser de qualquer época.', origem:'A busca reversa de imagem mostra a mesma foto publicada em 2019, em outra cidade, numa enchente diferente.'},
+   chave:'origem', resposta:'contexto', sinal:'A foto é real, mas é de outro lugar e de outro ano. O fato existiu; a história contada agora é outra.', dica:'Use a busca reversa de imagem (Google Lens ou TinEye) para ver onde a foto apareceu pela primeira vez.'},
+  {tipo:'site', dominio:'tse.jus.br', veiculo:'Tribunal Superior Eleitoral', data:'Notícias · ano de eleição', titulo:'Cadastro eleitoral fecha 150 dias antes da eleição',
+   texto:'Quem quer tirar o primeiro título, transferir ou atualizar dados precisa resolver tudo até 150 dias antes do dia da votação. O pedido pode começar pelo Autoatendimento Eleitoral, na internet.',
+   pistas:{quem:'Site oficial do Tribunal Superior Eleitoral. Endereços terminados em .jus.br são de órgãos do Judiciário.', quando:'Publicado em ano de eleição. A regra dos 150 dias está na Lei das Eleições (Lei 9.504/1997).', origem:'A mesma informação aparece nos sites dos Tribunais Regionais Eleitorais, como o TRE-CE.'},
+   chave:'quem', resposta:'confiavel', sinal:'Fonte oficial, informação que dá pra conferir em outros lugares e nenhum apelo emocional. Esse pode ser compartilhado.', dica:'Mesmo com fonte boa, confira o endereço do site letra por letra: golpistas copiam páginas oficiais.'},
+  {tipo:'tweet', autor:'Jornal do Povo', handle:'@JornaIdoPovo', ini:'JP', cor:'#E8CCFF', meta:'Conta criada em setembro',
+   texto:'URGENTE: universidades federais vão cobrar mensalidade a partir do ano que vem. Decisão saiu hoje no Diário Oficial.',
+   pistas:{quem:'O @ usa um "I" maiúsculo no lugar do "l". O perfil verdadeiro do jornal é outro e não publicou nada parecido.', quando:'A conta foi criada no mês passado e tem só 12 posts, todos "urgentes".', origem:'Cita o Diário Oficial, mas sem link nem número do ato. E a Constituição (art. 206) garante ensino gratuito nas instituições públicas.'},
+   chave:'quem', resposta:'falso', sinal:'Perfil impostor. Copiar nome e foto de um veículo conhecido é um jeito rápido de ganhar a sua confiança.', dica:'Abra o perfil: confira o @, a data de criação e se o veículo publicou a mesma notícia no próprio site.'},
+  {tipo:'insta', autor:'dr.natural.saude', ini:'DR', cor:'#BFFF8A', meta:'Link na bio: loja de chás', img:'cha',
+   texto:'Médico REVELA: chá de boldo com limão cura a dengue em 24 horas. Os laboratórios não querem que você saiba! 🍋🌿',
+   pistas:{quem:'O perfil não informa nome completo nem registro no conselho de medicina (CRM). O link da bio vende o chá do vídeo.', quando:'O mesmo vídeo volta a circular a cada surto de dengue.', origem:'Nenhum estudo citado. Não existe remédio caseiro que cure a dengue: o tratamento é hidratação e acompanhamento no posto de saúde.'},
+   chave:'quem', resposta:'falso', sinal:'Apelo emocional ("não querem que você saiba"), promessa milagrosa e alguém lucrando com a venda.', dica:'Desconfie de cura rápida. Procure o nome e o CRM do profissional e veja o que dizem as fontes de saúde pública.'},
+  {tipo:'site', dominio:'portalcidade.com.br', veiculo:'Portal Cidade', data:'Publicado em 12/03/2015', compartilhado:'Davi compartilhou hoje no grupo da turma', titulo:'Prefeitura anuncia meia passagem para estudantes também nos fins de semana',
+   texto:'A medida vale a partir do próximo mês e foi aprovada pela Câmara Municipal na última terça-feira.',
+   pistas:{quem:'Portal de notícias local, que assina as matérias e tem endereço e expediente no site.', quando:'A matéria é de março de 2015. O Davi compartilhou hoje como se fosse novidade. A regra pode ter mudado várias vezes desde então.', origem:'O texto cita uma lei municipal daquele ano, mas não dá pra saber pela matéria se ela continua valendo.'},
+   chave:'quando', resposta:'contexto', sinal:'Notícia velha compartilhada como nova. Era verdade em 2015; hoje, pode não ser.', dica:'Olhe a data antes do título. Depois confira no site da prefeitura se a regra ainda vale.'},
+  {tipo:'insta', autor:'brasil.acorda.ja', ini:'BA', cor:'#FFD2BF', meta:'Página · 30 posts por dia', img:'grafico',
+   texto:'PESQUISA: 9 em cada 10 jovens NÃO vão votar na próxima eleição. A juventude desistiu do Brasil!',
+   pistas:{quem:'Página de opinião, sem jornalistas ou responsáveis identificados.', quando:'Postado ontem, sem dizer quando a "pesquisa" foi feita.', origem:'Não diz qual instituto fez a pesquisa, quantas pessoas foram ouvidas nem onde. O gráfico não tem números no eixo.'},
+   chave:'origem', resposta:'falso', sinal:'Pesquisa sem instituto, sem amostra e sem data não é pesquisa. Gráfico sem escala serve só para impressionar.', dica:'Pesquisa séria informa instituto, número de entrevistados, margem de erro e data. Pesquisas eleitorais precisam ser registradas na Justiça Eleitoral.'},
+  {tipo:'insta', autor:'justica.eleitoral.oficial', verificado:true, ini:'JE', cor:'#E6FF3B', meta:'Perfil verificado · desde 2014',
+   texto:'⚠️ ALERTA DE GOLPE: a Justiça Eleitoral não envia SMS nem WhatsApp com link para "regularizar" o título. Tirar o título é gratuito, e nenhum serviço é cobrado por mensagem.',
+   pistas:{quem:'Perfil verificado, ativo há anos, com link para um site .jus.br na bio.', quando:'Publicado nesta semana, perto do fim do prazo do cadastro, época em que esse golpe mais aparece.', origem:'O mesmo alerta está no site do TSE, na área de serviços ao eleitor.'},
+   chave:'quem', resposta:'confiavel', sinal:'Fonte oficial, que não pede nada de você, e a informação confere com outros canais oficiais.', dica:'Órgão público não cobra por mensagem. Na dúvida, digite você mesmo o endereço do site em vez de clicar em links.'},
+  {tipo:'quote', autor:'Política Sem Filtro', ini:'PF', cor:'#E8CCFF', meta:'Página · sem responsável identificado', frase:'"Estudante não precisa de ônibus. Que vá a pé!"', fala:'Vereador Juca Batista (personagem fictício)',
+   texto:'Compartilhe se você também está revoltado!! 😡😡',
+   pistas:{quem:'Página anônima que só publica cards contra um mesmo grupo político.', quando:'Sem data e sem dizer onde a frase teria sido dita.', origem:'Nenhum jornal, vídeo ou ata da Câmara registra essa fala. Só existe o card.'},
+   chave:'origem', resposta:'falso', sinal:'Frase forte, sem vídeo, sem data e sem lugar. Quando ninguém mais registrou uma frase polêmica, ela provavelmente foi inventada.', dica:'Busque a frase entre aspas. Veja se algum veículo ou as atas da Câmara registram a fala.'}
+];
+const EPS = [
+  {t:'Corrente do Zap', sub:'Mensagens urgentes e perfis falsos', mon:{nome:'ZAPZILLA', c:'#3AD67A'}, posts:[0,3,5], premio:'rosa'},
+  {t:'Imagem enganosa', sub:'Fotos recicladas e promessas milagrosas', mon:{nome:'FOTOFAKE', c:'#8B5CF6'}, posts:[1,4,6], premio:'verde'},
+  {t:'Fonte oficial?', sub:'Quando dá pra confiar e quando não dá', mon:{nome:'CLONE-X', c:'#FF3B4E'}, posts:[2,7,8], premio:'roxo'}
+];
+const PISTA = {quem:'Quem postou?', quando:'Quando?', origem:'De onde veio?'};
+const VER = {confiavel:'Confiável', falso:'Falso', contexto:'Fora de contexto'};
+const PISTA_COR = {quem:'#2F4BFF', quando:'#D4F000', origem:'#FF5A1F'};
+
+/* progresso salvo neste navegador */
+let prog = store.get('quiz2', null) || {cor:null, done:[], baus:[], xp:0, cores:['azul','lima','laranja'], hist:{}};
+const save = () => store.set('quiz2', prog);
+const corHex = k => ESQ.COLORS.find(c=>c.k===k).c;
+
+function hud(){
+  return `<div class="topbar"><span class="stat" title="Ofensiva">${ICON.flame}${ESQ.streak.get()}</span><span class="stat" title="XP">${ICON.xp}${prog.xp}</span>${ESQ.soundButton()}</div>`;
+}
+function clearBottom(){ bottom.innerHTML = ''; }
+function setBottom(html){ bottom.innerHTML = `<div class="bottom"><div class="in">${html}</div></div>`; }
+
+/* ---------- abertura ---------- */
+function title(){
+  A.music('title'); clearBottom();
+  app.innerHTML = `${hud()}
+  <div class="title">
+    <div class="bars"><i></i><i></i><i></i><i></i><i></i><i></i><i></i></div>
+    <h1 class="logo"><span class="a">ESQUADRÃO</span><span class="b">CHECAGEM</span></h1>
+    <div class="lineup" id="lineup"></div>
+    <p class="read muted" style="max-width:36ch">Os monstros da desinformação invadiram o feed. Investigue cada post, dê o veredito certo e derrote a fake antes que ela se espalhe.</p>
+  </div>`;
+  ['verde','lima','azul','rosa','laranja'].forEach((k,i)=>$('#lineup').appendChild(ESQ.hero(corHex(k), i===2?6:4)));
+  setBottom(`<button class="btn" id="go">${prog.cor ? 'Continuar' : 'Começar'}</button><a class="btn ghost" href="../../" style="text-decoration:none">Midiando Jogos</a>`);
+  $('#go').onclick = () => { A.init(); A.sfx.select(); prog.cor ? map() : pickColor(); };
+}
+
+/* ---------- escolha do ranger ---------- */
+function pickColor(){
+  A.music('title');
+  app.innerHTML = `${hud()}<h2 style="font-size:16px;line-height:1.5">Escolha seu ranger</h2>
+    <p class="read muted">Cada episódio vencido libera uma cor nova.</p>
+    <div class="pick" id="pick"></div>`;
+  let sel = prog.cor || prog.cores[0];
+  const draw = () => {
+    $('#pick').innerHTML = '';
+    ESQ.COLORS.forEach(c=>{
+      const free = prog.cores.includes(c.k), b = document.createElement('button');
+      b.setAttribute('aria-pressed', sel===c.k); if(!free) b.classList.add('locked');
+      b.appendChild(ESQ.hero(free ? c.c : '#3A4170', 4));
+      b.insertAdjacentHTML('beforeend', `<span>${free ? 'Ranger '+c.nome : 'Bloqueado'}</span>`);
+      b.onclick = () => { if(!free){ A.sfx.wrong(); ESQ.toast('Vença episódios para liberar'); return; } sel = c.k; A.sfx.select(); draw(); };
+      $('#pick').appendChild(b);
+    });
+  };
+  draw();
+  setBottom(`<button class="btn" id="ok">Esse é o meu</button>`);
+  $('#ok').onclick = () => { prog.cor = sel; save(); A.sfx.join(); map(); };
+}
+
+/* ---------- trilha ---------- */
+function map(){
+  A.music('map'); clearBottom();
+  const nodes = [];
+  EPS.forEach((e,i)=>{ nodes.push({tipo:'ep', i}); nodes.push({tipo:'bau', i}); });
+  const curEp = EPS.findIndex((_,i)=>!prog.done.includes(i));
+  app.innerHTML = `${hud()}
+    <div class="unit"><span class="label" style="color:#fff">Temporada 1</span><h2>Esquadrão Checagem</h2><p class="read">3 episódios, 9 posts. Cada episódio vencido abre um baú.</p></div>
+    <div class="path" id="path"></div>`;
+  const path = $('#path');
+  const offs = [0, 60, 20, -50, -10, 50];
+  nodes.forEach((n,k)=>{
+    const wrap = document.createElement('div'); wrap.style.cssText = `display:flex;flex-direction:column;align-items:center;gap:22px;transform:translateX(${offs[k%offs.length]}px)`;
+    const b = document.createElement('button'); b.className = 'node';
+    if(n.tipo==='ep'){
+      const done = prog.done.includes(n.i), cur = n.i===curEp, lock = !done && !cur && n.i>curEp && curEp!==-1;
+      b.classList.add(cur ? 'cur' : lock ? 'lock' : 'x');
+      b.innerHTML = lock ? ICON.lock : done ? ICON.star : String(n.i+1);
+      b.setAttribute('aria-label', `Episódio ${n.i+1}: ${EPS[n.i].t}`);
+      if(cur) b.insertAdjacentHTML('beforeend', `<span class="tip">COMEÇAR</span>`);
+      b.onclick = () => { if(lock){ A.sfx.wrong(); ESQ.anim(b,'shake',400); return; } A.sfx.select(); lesson(n.i); };
+      wrap.appendChild(b);
+      wrap.insertAdjacentHTML('beforeend', `<div class="nodelabel">EP ${n.i+1} · ${EPS[n.i].t.toUpperCase()}</div>`);
+      const m = ESQ.monster(lock ? '#3A4170' : EPS[n.i].mon.c, 3); m.style.cssText = 'position:absolute;right:-70px;top:10px'; wrap.style.position='relative'; wrap.appendChild(m);
+    } else {
+      const opened = prog.baus.includes(n.i), ready = prog.done.includes(n.i) && !opened;
+      b.classList.add('chest'); if(!ready && !opened) b.classList.add('lock'); if(opened) b.classList.add('opened');
+      if(ready) b.style.animation = 'nodebob 1s ease-in-out infinite';
+      b.innerHTML = opened ? ICON.chestOpen : ICON.chest; b.setAttribute('aria-label', 'Baú');
+      b.onclick = () => { if(ready){ chest(n.i); } else { A.sfx.click(); ESQ.toast(opened ? 'Baú já aberto' : 'Vença o episódio para abrir'); } };
+      wrap.appendChild(b);
+    }
+    path.appendChild(wrap);
+  });
+  const end = document.createElement('div'); end.style.cssText='display:flex;flex-direction:column;align-items:center;gap:10px';
+  const allDone = prog.done.length === EPS.length;
+  end.innerHTML = `<button class="node ${allDone?'':'lock'}" aria-label="Final da temporada">${ICON.trophy}</button><div class="nodelabel">FINAL DA TEMPORADA</div>`;
+  end.querySelector('button').onclick = () => allDone ? finale() : (A.sfx.wrong(), ESQ.toast('Vença os 3 episódios'));
+  path.appendChild(end);
+  const me = ESQ.hero(corHex(prog.cor), 3); me.style.cssText = 'margin-top:-6px';
+  const curNode = path.querySelector('.node.cur'); if(curNode) curNode.parentElement.appendChild(me);
+  setTimeout(()=>{ const t = path.querySelector('.node.cur') || path.querySelector('.chest:not(.lock):not(.opened)'); if(t) t.scrollIntoView({block:'center', behavior:'smooth'}); }, 200);
+}
+
+/* ---------- episódio (batalha) ---------- */
+let L;
+function lesson(ep){
+  A.music('battle');
+  L = {ep, i:0, hearts:3, hp:3, xp:0, combo:0, maxCombo:0, acertos:0, pista:null, sel:null, checked:false, t0:Date.now()};
+  renderRound();
+}
+function postHTML(q){
+  const head = `<div class="phead"><div class="av" style="background:${q.cor}">${q.ini}</div><div class="who"><b>${esc(q.autor)}${q.verificado?'<span class="verified">✓</span>':''}</b><span>${esc(q.handle?q.handle+' · ':'')}${esc(q.meta)}</span></div></div>`;
+  if(q.tipo==='zap') return `<article class="post zap">${head}<div class="bubble"><span class="fwd">↪↪ ${esc(q.meta)}</span><p>${esc(q.texto)}</p><span class="time">07:42 ✓✓</span></div></article>`;
+  if(q.tipo==='site') return `<article class="post site"><div class="domain">🔒 <b>${esc(q.dominio)}</b></div>${q.compartilhado?`<div class="shared">↪ ${esc(q.compartilhado)}</div>`:''}<h3>${esc(q.titulo)}</h3><div class="date">${esc(q.veiculo)} · ${esc(q.data)}</div><p class="lede">${esc(q.texto)}</p></article>`;
+  if(q.tipo==='quote') return `<article class="post">${head}<div class="quote">${esc(q.frase)}<small>${esc(q.fala)}</small></div><p class="ptext" style="padding-top:12px">${esc(q.texto)}</p></article>`;
+  if(q.tipo==='tweet') return `<article class="post">${head}<p class="ptext">${esc(q.texto)}</p><div class="pfoot"><span>↻ 4,1 mil</span><span>♥ 9,8 mil</span></div></article>`;
+  return `<article class="post">${head}${q.img?`<div class="pimg">${IMG[q.img]}</div>`:''}<p class="ptext" style="padding-top:12px"><b>${esc(q.autor)}</b> ${esc(q.texto)}</p></article>`;
+}
+function renderRound(){
+  const e = EPS[L.ep], q = Q[e.posts[L.i]];
+  const pct = (L.i + (L.checked?1:0)) / e.posts.length * 100;
+  app.innerHTML = `
+    <div class="hud"><button class="x" id="sair" aria-label="Sair do episódio">✕</button><div class="prog"><i style="width:${pct}%"></i></div>
+      <span class="stat" id="hearts">${Array.from({length:3},(_,k)=>`<span class="heart ${k>=L.hearts?'lost':''}" style="display:inline-block;width:20px;height:18px">${ICON.heart}</span>`).join('')}</span></div>
+    <div class="stage" id="stage">
+      <div class="nameplate l"><span>VOCÊ</span></div>
+      <div class="nameplate r"><span>${e.mon.nome}</span><div class="hp">${Array.from({length:3},(_,k)=>`<i class="${k>=L.hp?'off':''}"></i>`).join('')}</div></div>
+      ${L.combo>=2?`<div class="combo">COMBO x${L.combo}</div>`:''}
+      <div class="actor left" id="me"></div><div class="actor right" id="mon"></div>
+    </div>
+    ${postHTML(q)}
+    <div class="panel">
+      <span class="label">Escanear (escolha 1 pista)</span>
+      <div class="skills" id="skills"></div>
+      <div id="reveal"></div>
+      <span class="label">Seu veredito</span>
+      <div class="tiles c3" id="ver"></div>
+    </div>`;
+  $('#me').appendChild(ESQ.hero(corHex(prog.cor), 5));
+  $('#mon').appendChild(ESQ.monster(e.mon.c, 5));
+  $('#sair').onclick = () => { A.sfx.click(); map(); };
+  const sk = $('#skills');
+  Object.keys(PISTA).forEach(p=>{
+    const b = document.createElement('button'); b.className = 'skill'; b.dataset.p = p;
+    if(L.pista===p) b.classList.add('on'); if(L.checked && q.chave===p && L.pista!==p) b.classList.add('key');
+    if(L.pista || L.checked) b.disabled = true;
+    const ic = ESQ.hero(PISTA_COR[p], 2); b.appendChild(ic); b.insertAdjacentHTML('beforeend', `<span>${PISTA[p]}</span>`);
+    b.onclick = () => { if(L.pista || L.checked) return; L.pista = p; A.sfx.scan(); renderRound(); ESQ.float('+ PISTA', b, '#E6FF3B'); };
+    sk.appendChild(b);
+  });
+  if(L.pista) $('#reveal').innerHTML = `<div class="reveal"><span class="label">${PISTA[L.pista]}</span>${esc(q.pistas[L.pista])}</div>`;
+  const vr = $('#ver');
+  Object.keys(VER).forEach(v=>{
+    const b = document.createElement('button'); b.className = 'tile center'; b.textContent = VER[v];
+    if(L.sel===v) b.classList.add('sel');
+    if(L.checked){ b.disabled = true; if(v===q.resposta) b.classList.add('ok'); else if(v===L.sel) b.classList.add('no'); }
+    b.onclick = () => { if(L.checked) return; L.sel = v; A.sfx.click(); renderRound(); };
+    vr.appendChild(b);
+  });
+  if(!L.checked){
+    setBottom(`<button class="btn" id="check" ${L.sel?'':'disabled'}>Verificar</button>`);
+    $('#check').onclick = check;
+  }
+}
+async function check(){
+  const e = EPS[L.ep], q = Q[e.posts[L.i]], ok = L.sel === q.resposta;
+  L.checked = true; clearBottom();
+  let ganho = 0;
+  if(ok){ L.combo++; L.maxCombo = Math.max(L.maxCombo, L.combo); L.acertos++; ganho = 10 + (L.pista===q.chave?5:0) + (L.combo>=2?5:0); L.hp--; }
+  else { L.combo = 0; L.hearts--; }
+  L.xp += ganho;
+  prog.hist[e.posts[L.i]] = {ok, pista:L.pista, pistaCerta:L.pista===q.chave};
+  renderRound();
+  const me = $('#me'), mon = $('#mon'), stage = $('#stage');
+  if(ok){
+    A.sfx.correct(L.combo);
+    ESQ.anim(me, 'dash-r', 450); await sleep(180); A.sfx.hit(); ESQ.anim(mon, 'hit', 450);
+    const [x,y] = ESQ.center(mon); ESQ.burst(x, y, ['#E6FF3B','#fff',e.mon.c], 24);
+    ESQ.float(`+${ganho} XP`, mon);
+    if(L.hp===0){ await sleep(420); A.sfx.boom(); mon.classList.add('boom'); ESQ.burst(x, y, ['#E6FF3B','#FF5A1F','#fff',e.mon.c], 70, 8); ESQ.anim(stage,'shake',400); }
+  } else {
+    A.sfx.wrong(); ESQ.anim(mon, 'dash-l', 450); await sleep(180); A.sfx.hit(); ESQ.anim(me, 'hit', 450); ESQ.anim(stage, 'shake', 400);
+    A.sfx.heart();
+  }
+  const last = L.i === e.posts.length-1 || L.hearts === 0;
+  bottom.innerHTML = `<div class="sheet ${ok?'ok':'no'}"><div class="in">
+    <h3>${ok ? (L.hp===0 ? 'FAKE DERROTADA!' : 'MANDOU BEM!') : 'NÃO FOI DESSA VEZ'}</h3>
+    <div class="read">${ok ? '' : `<p>Resposta certa: <b>${VER[q.resposta]}</b>.</p>`}<p><b>O sinal:</b> ${esc(q.sinal)}</p>${L.pista!==q.chave?`<p><b>A pista que entregava:</b> ${PISTA[q.chave]} ${esc(q.pistas[q.chave])}</p>`:''}<p><b>Como checar:</b> ${esc(q.dica)}</p></div>
+    <button class="btn ${ok?'green':'red'}" id="next">${last ? 'Continuar' : 'Próximo post'}</button></div></div>`;
+  $('#next').onclick = () => {
+    A.sfx.click();
+    if(L.hearts === 0) return fail();
+    if(L.i < e.posts.length-1){ L.i++; L.pista = null; L.sel = null; L.checked = false; clearBottom(); renderRound(); window.scrollTo(0,0); }
+    else complete();
+  };
+}
+function fail(){
+  A.music('map');
+  app.innerHTML = `<div class="reward"><h1>SEM CORAÇÕES</h1><div id="fm" class="jump"></div><p class="read muted">${EPS[L.ep].mon.nome} escapou dessa vez. Respire, releia as pistas e tente de novo.</p></div>`;
+  $('#fm').appendChild(ESQ.monster(EPS[L.ep].mon.c, 8)); A.sfx.wrong();
+  setBottom(`<button class="btn" id="re">Reprise do episódio</button><button class="btn ghost" id="m">Voltar à trilha</button>`);
+  $('#re').onclick = () => lesson(L.ep); $('#m').onclick = map;
+}
+
+/* ---------- recompensas ---------- */
+async function complete(){
+  const e = EPS[L.ep], first = !prog.done.includes(L.ep);
+  const bonus = first ? 20 : 0, total = L.xp + bonus;
+  prog.xp += total; if(first) prog.done.push(L.ep); save();
+  const secs = Math.round((Date.now()-L.t0)/1000), prec = Math.round(L.acertos/e.posts.length*100);
+  A.music(null); A.sfx.win(); ESQ.confetti();
+  clearBottom();
+  app.innerHTML = `<div class="reward">
+    <h1>EPISÓDIO<br>CONCLUÍDO!</h1>
+    <div id="hero" class="jump"></div>
+    <div class="statrow">
+      <div class="sbox" style="--c:var(--gold)"><div class="t">XP TOTAL</div><div class="v" id="s1">0</div></div>
+      <div class="sbox" style="--c:var(--green)"><div class="t">PRECISÃO</div><div class="v"><span id="s2">0</span>%</div></div>
+      <div class="sbox" style="--c:var(--blue-hi)"><div class="t">COMBO</div><div class="v">x<span id="s3">0</span></div></div>
+    </div>
+    <p class="read muted">${first?'Bônus de primeira vitória: +20 XP. ':''}Tempo: ${Math.floor(secs/60)}min${String(secs%60).padStart(2,'0')}s.</p>
+  </div>`;
+  $('#hero').appendChild(ESQ.hero(corHex(prog.cor), 7));
+  await ESQ.countUp($('#s1'), total); await ESQ.countUp($('#s2'), prec, 600); await ESQ.countUp($('#s3'), L.maxCombo, 400);
+  setBottom(`<button class="btn" id="c">Continuar</button>`);
+  $('#c').onclick = streakScreen;
+}
+function streakScreen(){
+  const s = ESQ.streak.hit();
+  if(!s.novo) return map();
+  A.sfx.chest();
+  app.innerHTML = `<div class="reward" style="padding-top:60px">
+    <div class="flame jump">${ICON.flame.replace('<svg','<svg style="width:110px;height:132px"')}</div>
+    <h1 style="color:var(--orange)">${s.n} ${s.n===1?'DIA':'DIAS'} DE OFENSIVA</h1>
+    <p class="read muted">Volte amanhã para manter a chama acesa. Cada dia jogando conta.</p></div>`;
+  setBottom(`<button class="btn" id="c">Continuar</button>`); $('#c').onclick = map;
+}
+function chest(i){
+  const k = EPS[i].premio, c = ESQ.COLORS.find(x=>x.k===k);
+  A.music(null);
+  app.innerHTML = `<div class="reward" style="padding-top:50px"><h1>BAÚ DO EPISÓDIO ${i+1}</h1>
+    <button class="chestbig" id="bau" aria-label="Abrir baú">${ICON.chest.replace('<svg','<svg style="width:120px;height:105px"')}</button>
+    <p class="read muted" id="msg">Toque no baú para abrir.</p><div id="prize"></div></div>`;
+  clearBottom();
+  $('#bau').onclick = async () => {
+    const b = $('#bau'); if(b.dataset.open) return; b.dataset.open = 1;
+    A.sfx.chest(); b.classList.add('open'); b.innerHTML = ICON.chestOpen.replace('<svg','<svg style="width:120px;height:105px"');
+    const [x,y] = ESQ.center(b); ESQ.burst(x, y, ['#FFC93C','#FFE27A','#fff', c.c], 60, 7);
+    await sleep(500);
+    $('#msg').innerHTML = `Nova cor liberada: <b style="color:${c.c}">Ranger ${c.nome}</b> e +30 XP`;
+    $('#prize').appendChild(ESQ.hero(c.c, 6)); $('#prize').firstChild.classList.add('jump');
+    if(!prog.cores.includes(k)) prog.cores.push(k); prog.baus.push(i); prog.xp += 30; save();
+    setBottom(`<button class="btn" id="usar">Usar o Ranger ${c.nome}</button><button class="btn ghost" id="m">Voltar à trilha</button>`);
+    $('#usar').onclick = () => { prog.cor = k; save(); A.sfx.join(); map(); };
+    $('#m').onclick = map;
+  };
+}
+
+/* ---------- final da temporada ---------- */
+const PERFIS = {
+  detetive:{nome:'Detetive de respeito', txt:'Você investiga antes de opinar e não cai em manchete apressada.'},
+  aprendiz:{nome:'Aprendiz de checagem', txt:'Você já sabe onde procurar. Falta treinar o olho para datas, @ parecidos e fotos recicladas.'},
+  desconfiado:{nome:'Desconfiança no máximo', txt:'Você desconfiou até do que era verdade. Checar serve para separar, não para descartar tudo.'},
+  apressado:{nome:'Compartilhador apressado', txt:'Você respondeu rápido e investigou pouco. Uma pista leva 10 segundos.'}
+};
+function perfil(){
+  const h = Object.entries(prog.hist), ac = h.filter(([,x])=>x.ok).length, us = h.filter(([,x])=>x.pista).length;
+  const ver = h.filter(([k,x])=>Q[k].resposta==='confiavel' && !x.ok).length;
+  if(us<=3) return 'apressado'; if(ac>=8) return 'detetive'; if(ver>=2) return 'desconfiado'; if(ac<=4 && us<=5) return 'apressado'; return 'aprendiz';
+}
+async function finale(){
+  A.music('title'); ESQ.confetti(); A.sfx.win();
+  const h = Object.values(prog.hist), ac = h.filter(x=>x.ok).length, p = PERFIS[perfil()];
+  app.innerHTML = `${hud()}<div class="reward" style="padding-top:8px"><h1>TEMPORADA<br>COMPLETA!</h1><p class="read">${p.txt}</p></div><div class="share" id="share"><p class="read muted">Gerando seu cartão...</p></div>`;
+  const cores = [prog.cor, ...prog.cores.filter(k=>k!==prog.cor)].slice(0,5).map(corHex);
+  const url = await ESQ.card({kicker:'ESQUADRAO CHECAGEM', title:['NO QUIZ,','EU SOU'], highlight:p.nome.toUpperCase().slice(0,22), heroes:cores,
+    stats:[['ACERTOS', `${ac}/9`], ['XP', prog.xp], ['OFENSIVA', ESQ.streak.get()]],
+    lines:['Antes de compartilhar, investigue.'], footer:'@projetomidiando'});
+  $('#share').innerHTML = `<img src="${url}" alt="Cartão: no Quiz Midiando eu sou ${esc(p.nome)}"><p class="read muted small" style="text-align:center;margin-top:8px">Toque e segure a imagem para salvar e postar.</p>`;
+  setBottom(`<div class="row"><button class="btn" id="cp">Copiar legenda</button><button class="btn ghost" id="m">Trilha</button></div>`);
+  $('#cp').onclick = () => ESQ.copy(`No Esquadrão Checagem eu sou "${p.nome}": ${ac}/9 acertos e ${prog.xp} XP. Antes de compartilhar, investigue! @projetomidiando`);
+  $('#m').onclick = map;
+}
+
+title();
+})();
+</script>
+</html>
